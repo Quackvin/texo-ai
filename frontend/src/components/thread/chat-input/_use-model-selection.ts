@@ -6,8 +6,9 @@ import { isLocalMode } from '@/lib/config';
 // import { useAvailableModels } from '@/hooks/react-query/subscriptions/use-model';
 
 export const STORAGE_KEY_MODEL = 'suna-preferred-model';
-export const DEFAULT_FREE_MODEL_ID = 'deepseek';
-export const DEFAULT_PREMIUM_MODEL_ID = 'sonnet-3.7';
+// export const DEFAULT_FREE_MODEL_ID = 'deepseek';
+// export const DEFAULT_PREMIUM_MODEL_ID = 'sonnet-3.7';
+export const DEFAULT_MODEL_ID = 'sonnet-3.7';
 
 export type SubscriptionStatus = 'no_subscription' | 'active';
 
@@ -44,7 +45,7 @@ export const canAccessModel = (
 };
 
 export const useModelSelection = () => {
-  const [selectedModel, setSelectedModel] = useState(DEFAULT_FREE_MODEL_ID);
+  const [selectedModel, setSelectedModel] = useState(DEFAULT_MODEL_ID);
   
   const { data: subscriptionData } = useSubscription();
   // const { data: modelsData, isLoading: isLoadingModels } = useAvailableModels({
@@ -203,7 +204,7 @@ export const useModelSelection = () => {
   // only offer Sonnet 3.7. no free usage
   return {
     selectedModel,
-    setSelectedModel: 'Sonnet 3.7',
+    setSelectedModel: 'sonnet-3.7',
     subscriptionStatus,
     canAccessModel: () => {
       if (isLocalMode()) return true;
