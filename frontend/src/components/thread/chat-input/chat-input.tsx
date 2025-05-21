@@ -82,7 +82,7 @@ export const ChatInput = forwardRef<ChatInputHandles, ChatInputProps>(
       selectedModel,
       setSelectedModel: handleModelChange,
       subscriptionStatus,
-      allModels: modelOptions,
+      // allModels: modelOptions,
       canAccessModel,
     } = useModelSelection();
 
@@ -231,8 +231,8 @@ export const ChatInput = forwardRef<ChatInputHandles, ChatInputProps>(
                 hideAttachments={hideAttachments}
 
                 selectedModel={selectedModel}
-                onModelChange={handleModelChange}
-                modelOptions={modelOptions}
+                onModelChange={() => {}}
+                modelOptions={[]}
                 subscriptionStatus={subscriptionStatus}
                 canAccessModel={canAccessModel}
               />
@@ -248,7 +248,7 @@ export const ChatInput = forwardRef<ChatInputHandles, ChatInputProps>(
           >
             <div className="text-xs text-muted-foreground flex items-center gap-2">
               <Loader2 className="h-3 w-3 animate-spin" />
-              <span>Kortix Suna is working...</span>
+              <span>Texo is working...</span>
             </div>
           </motion.div>
         )}
