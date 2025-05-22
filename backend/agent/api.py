@@ -34,7 +34,8 @@ REDIS_RESPONSE_LIST_TTL = 3600 * 24
 
 MODEL_NAME_ALIASES = {
     # Short names to full names
-    "sonnet-3.7": "anthropic/claude-3-7-sonnet-latest",
+    # "sonnet-3.7": "anthropic/claude-3-7-sonnet-latest", -- use sonnet through openrouter API instead of anthropic
+    "sonnet-3.7": "openrouter/anthropic/claude-3.7-sonnet",
     # "gpt-4.1": "openai/gpt-4.1-2025-04-14",  # Commented out in constants.py
     "gpt-4o": "openai/gpt-4o",
     # "gpt-4-turbo": "openai/gpt-4-turbo",  # Commented out in constants.py
