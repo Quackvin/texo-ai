@@ -6,7 +6,8 @@ import { isLocalMode } from '@/lib/config';
 import { useAvailableModels } from '@/hooks/react-query/subscriptions/use-model';
 
 export const STORAGE_KEY_MODEL = 'suna-preferred-model';
-export const DEFAULT_FREE_MODEL_ID = 'deepseek';
+// export const DEFAULT_FREE_MODEL_ID = 'deepseek';
+export const DEFAULT_FREE_MODEL_ID = 'sonnet-3.7';
 export const DEFAULT_PREMIUM_MODEL_ID = 'sonnet-3.7';
 
 export type SubscriptionStatus = 'no_subscription' | 'active';
@@ -190,13 +191,21 @@ export const useModelSelection = () => {
     subscriptionStatus,
     availableModels,
     allModels: MODEL_OPTIONS,
-    canAccessModel: (modelId: string) => {
+    canAccessModel: () => {
       if (isLocalMode()) return true;
-      const model = MODEL_OPTIONS.find(m => m.id === modelId);
-      return model ? canAccessModel(subscriptionStatus, model.requiresSubscription) : false;
+      return subscriptionStatus === 'active' ? true : false;
     },
-    isSubscriptionRequired: (modelId: string) => {
-      return MODEL_OPTIONS.find(m => m.id === modelId)?.requiresSubscription || false;
+    isSubscriptionRequired: () => {
+      if (isLocalMode()) return false;
+      return true;
     }
+    // canAccessModel: (modelId: string) => {
+    //   if (isLocalMode()) return true;
+    //   const model = MODEL_OPTIONS.find(m => m.id === modelId);
+    //   return model ? canAccessModel(subscriptionStatus, model.requiresSubscription) : false;
+    // },
+    // isSubscriptionRequired: (modelId: string) => {
+    //   return MODEL_OPTIONS.find(m => m.id === modelId)?.requiresSubscription || false;
+    // }
   };
 };

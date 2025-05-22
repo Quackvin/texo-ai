@@ -138,14 +138,7 @@ export const MessageInput = forwardRef<HTMLTextAreaElement, MessageInputProps>(
             
           </div>
           <div className='flex items-center gap-2'>
-            <ModelSelector
-              selectedModel={selectedModel}
-              onModelChange={onModelChange}
-              modelOptions={modelOptions}
-              subscriptionStatus={subscriptionStatus}
-              canAccessModel={canAccessModel}
-              initialAutoSelect={!isLocalMode()}
-            />
+            <span className="text-sm text-muted-foreground">Sonnet 3.7</span>
             <Button
               type="submit"
               onClick={isAgentRunning && onStopAgent ? onStopAgent : onSubmit}
