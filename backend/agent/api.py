@@ -1,3 +1,8 @@
+"""
+TEXO AI UPDATES:
+- moved model name aliases to constants.py
+"""
+
 from fastapi import APIRouter, HTTPException, Depends, Request, Body, File, UploadFile, Form
 from fastapi.responses import StreamingResponse
 import asyncio
@@ -10,6 +15,7 @@ import jwt
 from pydantic import BaseModel
 import tempfile
 import os
+from utils.constants import MODEL_NAME_ALIASES
 
 from agentpress.thread_manager import ThreadManager
 from services.supabase import DBConnection
@@ -31,38 +37,6 @@ instance_id = None # Global instance ID for this backend instance
 
 # TTL for Redis response lists (24 hours)
 REDIS_RESPONSE_LIST_TTL = 3600 * 24
-
-MODEL_NAME_ALIASES = {
-    # Short names to full names
-    "sonnet-3.7": "anthropic/claude-3-7-sonnet-latest", 
-    # "sonnet-3.7": "openrouter/anthropic/claude-3.7-sonnet",
-    # "gpt-4.1": "openai/gpt-4.1-2025-04-14",  # Commented out in constants.py
-    "gpt-4o": "openai/gpt-4o",
-    # "gpt-4-turbo": "openai/gpt-4-turbo",  # Commented out in constants.py
-    # "gpt-4": "openai/gpt-4",  # Commented out in constants.py
-    # "gemini-flash-2.5": "openrouter/google/gemini-2.5-flash-preview",  # Commented out in constants.py
-    # "grok-3": "xai/grok-3-fast-latest",  # Commented out in constants.py
-    "deepseek": "openrouter/deepseek/deepseek-chat",
-    # "deepseek-r1": "openrouter/deepseek/deepseek-r1",
-    # "grok-3-mini": "xai/grok-3-mini-fast-beta",  # Commented out in constants.py
-    "qwen3": "openrouter/qwen/qwen3-235b-a22b",  # Commented out in constants.py
-
-
-
-    # Also include full names as keys to ensure they map to themselves
-    "anthropic/claude-3-7-sonnet-latest": "anthropic/claude-3-7-sonnet-latest",
-    # "openai/gpt-4.1-2025-04-14": "openai/gpt-4.1-2025-04-14",  # Commented out in constants.py
-    "openai/gpt-4o": "openai/gpt-4o",
-    # "openai/gpt-4-turbo": "openai/gpt-4-turbo",  # Commented out in constants.py
-    # "openai/gpt-4": "openai/gpt-4",  # Commented out in constants.py
-    # "openrouter/google/gemini-2.5-flash-preview": "openrouter/google/gemini-2.5-flash-preview",  # Commented out in constants.py
-    # "xai/grok-3-fast-latest": "xai/grok-3-fast-latest",  # Commented out in constants.py
-    "deepseek/deepseek-chat": "openrouter/deepseek/deepseek-chat",
-    # "deepseek/deepseek-r1": "openrouter/deepseek/deepseek-r1",
-
-    "qwen/qwen3-235b-a22b": "openrouter/qwen/qwen3-235b-a22b",
-    # "xai/grok-3-mini-fast-beta": "xai/grok-3-mini-fast-beta",  # Commented out in constants.py
-}
 
 class AgentStartRequest(BaseModel):
     model_name: Optional[str] = None  # Will be set from config.MODEL_TO_USE in the endpoint

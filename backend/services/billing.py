@@ -4,6 +4,12 @@ Stripe Billing API implementation for Suna on top of Basejump. ONLY HAS SUPPOT F
 stripe listen --forward-to localhost:8000/api/billing/webhook
 """
 
+"""
+TEXO AI UPDATES:
+- moved model name aliases to constants.py
+- reduced to only 1 tier
+"""
+
 from fastapi import APIRouter, HTTPException, Depends, Request
 from typing import Optional, Dict, Tuple
 import stripe
@@ -13,43 +19,12 @@ from utils.config import config, EnvMode
 from services.supabase import DBConnection
 from utils.auth_utils import get_current_user_id_from_jwt
 from pydantic import BaseModel
-from utils.constants import MODEL_ACCESS_TIERS
+from utils.constants import MODEL_ACCESS_TIERS, MODEL_NAME_ALIASES
 # Initialize Stripe
 stripe.api_key = config.STRIPE_SECRET_KEY
 
 # Initialize router
 router = APIRouter(prefix="/billing", tags=["billing"])
-
-MODEL_NAME_ALIASES = {
-    # Short names to full names
-    "sonnet-3.7": "anthropic/claude-3-7-sonnet-latest",
-    # "gpt-4.1": "openai/gpt-4.1-2025-04-14",  # Commented out in constants.py
-    "gpt-4o": "openai/gpt-4o",
-    # "gpt-4-turbo": "openai/gpt-4-turbo",  # Commented out in constants.py
-    # "gpt-4": "openai/gpt-4",  # Commented out in constants.py
-    # "gemini-flash-2.5": "openrouter/google/gemini-2.5-flash-preview",  # Commented out in constants.py
-    # "grok-3": "xai/grok-3-fast-latest",  # Commented out in constants.py
-    "deepseek": "openrouter/deepseek/deepseek-chat",
-    # "deepseek-r1": "openrouter/deepseek/deepseek-r1",
-    # "grok-3-mini": "xai/grok-3-mini-fast-beta",  # Commented out in constants.py
-    "qwen3": "openrouter/qwen/qwen3-235b-a22b",  # Commented out in constants.py
-
-
-
-    # Also include full names as keys to ensure they map to themselves
-    "anthropic/claude-3-7-sonnet-latest": "anthropic/claude-3-7-sonnet-latest",
-    # "openai/gpt-4.1-2025-04-14": "openai/gpt-4.1-2025-04-14",  # Commented out in constants.py
-    "openai/gpt-4o": "openai/gpt-4o",
-    # "openai/gpt-4-turbo": "openai/gpt-4-turbo",  # Commented out in constants.py
-    # "openai/gpt-4": "openai/gpt-4",  # Commented out in constants.py
-    # "openrouter/google/gemini-2.5-flash-preview": "openrouter/google/gemini-2.5-flash-preview",  # Commented out in constants.py
-    # "xai/grok-3-fast-latest": "xai/grok-3-fast-latest",  # Commented out in constants.py
-    "deepseek/deepseek-chat": "openrouter/deepseek/deepseek-chat",
-    # "deepseek/deepseek-r1": "openrouter/deepseek/deepseek-r1",
-    
-    "qwen/qwen3-235b-a22b": "openrouter/qwen/qwen3-235b-a22b",
-    # "xai/grok-3-mini-fast-beta": "xai/grok-3-mini-fast-beta",  # Commented out in constants.py
-}
 
 SUBSCRIPTION_TIERS = {
     config.STRIPE_FREE_TIER_ID: {'name': 'free', 'minutes': 60},
