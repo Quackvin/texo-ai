@@ -1,5 +1,17 @@
-# TEXO UDPATES:
-# - reduced to only 1 tier
+"""
+TEXO UDPATES:
+- reduced to only 1 tier
+- moved model_access_tiers to this file
+- moved subscription_tiers to this file
+"""
+from utils.config import config
+
+# Get subscription tiers IDs from config and apply limits
+SUBSCRIPTION_TIERS = {
+    config.STRIPE_FREE_TIER_ID: {'name': 'free', 'minutes': 60},
+    config.STRIPE_BASIC_TIER_ID: {'name': 'basic', 'minutes': 9999999}
+}
+
 MODEL_ACCESS_TIERS = {
     "basic": [
         "anthropic/claude-3-7-sonnet-latest"
