@@ -232,6 +232,7 @@ async def can_use_model(client, user_id: str, model_name: str):
         
     allowed_models = await get_allowed_models_for_user(client, user_id)
     resolved_model = MODEL_NAME_ALIASES.get(model_name, model_name)
+    logger.info(f"[billing.can_use_model()] User ID: {user_id} - Resolved model: {resolved_model}, Allowed models: {allowed_models}")
     if resolved_model in allowed_models:
         return True, "Model access allowed", allowed_models
     

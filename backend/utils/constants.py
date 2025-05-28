@@ -14,7 +14,7 @@ SUBSCRIPTION_TIERS = {
 
 MODEL_ACCESS_TIERS = {
     "basic": [
-        "anthropic/claude-3-7-sonnet-latest"
+        "anthropic/claude-3-7-sonnet-latest",
         "openrouter/deepseek/deepseek-chat",
         "openrouter/qwen/qwen3-235b-a22b",
         "openrouter/google/gemini-2.5-flash-preview",
