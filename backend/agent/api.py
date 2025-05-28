@@ -31,7 +31,6 @@ instance_id = None # Global instance ID for this backend instance
 # TTL for Redis response lists (24 hours)
 REDIS_RESPONSE_LIST_TTL = 3600 * 24
 
-
 class AgentStartRequest(BaseModel):
     model_name: Optional[str] = None  # Will be set from config.MODEL_TO_USE in the endpoint
     enable_thinking: Optional[bool] = False

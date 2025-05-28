@@ -328,10 +328,9 @@ export function ToolCallSidePanel({
           <div className="flex flex-col h-full">
             <div className="pt-4 pl-4 pr-4">
               <div className="flex items-center justify-between">
-                <div className="ml-2 flex items-center gap-2">
-                  <Computer className="h-4 w-4" />
-                  <h2 className="text-md font-medium text-zinc-900 dark:text-zinc-100">
-                    Suna's Computer
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">
+                    Texo's Workspace
                   </h2>
                 </div>
                 <Button
@@ -364,10 +363,9 @@ export function ToolCallSidePanel({
         <div className="flex flex-col h-full">
           <div className="pt-4 pl-4 pr-4">
             <div className="flex items-center justify-between">
-              <div className="ml-2 flex items-center gap-2">
-                <Computer className="h-4 w-4" />
-                <h2 className="text-md font-medium text-zinc-900 dark:text-zinc-100">
-                  Suna's Computer
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">
+                  Texo's Workspace
                 </h2>
               </div>
               <Button
@@ -506,10 +504,9 @@ export function ToolCallSidePanel({
       <div className="flex flex-col h-full">
         <div className="p-3">
           <div className="flex items-center justify-between">
-            <div className="ml-2 flex items-center gap-2">
-              <Computer className="h-4 w-4" />
-              <h2 className="text-md font-medium text-zinc-900 dark:text-zinc-100">
-                Suna's Computer
+            <div className="flex items-center gap-2">
+              <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">
+                Texo's Workspace
               </h2>
             </div>
 
