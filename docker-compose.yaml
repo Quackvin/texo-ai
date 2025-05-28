@@ -1,3 +1,9 @@
+# TEXO AI  UPDATES
+#
+# 1. Update frontend port to be 80:3000
+# 2. Comment out environment variables in backend and worker services
+#    so the .env files are used instead.
+
 services:
   redis:
     image: redis:7-alpine
@@ -38,13 +44,13 @@ services:
       - ./backend/.env:/app/.env:ro
     env_file:
       - ./backend/.env
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=
-      - REDIS_SSL=False
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
+    # environment:
+    #   - REDIS_HOST=redis
+    #   - REDIS_PORT=6379
+    #   - REDIS_PASSWORD=
+    #   - REDIS_SSL=False
+    #   - RABBITMQ_HOST=rabbitmq
+    #   - RABBITMQ_PORT=5672
     depends_on:
       redis:
         condition: service_healthy
@@ -62,13 +68,13 @@ services:
       - ./backend/.env:/app/.env:ro
     env_file:
       - ./backend/.env
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=
-      - REDIS_SSL=False
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
+    # environment:
+    #   - REDIS_HOST=redis
+    #   - REDIS_PORT=6379
+    #   - REDIS_PASSWORD=
+    #   - REDIS_SSL=False
+    #   - RABBITMQ_HOST=rabbitmq
+    #   - RABBITMQ_PORT=5672
     depends_on:
       redis:
         condition: service_healthy
@@ -85,7 +91,7 @@ services:
     volumes:
       - ./frontend/.env.local:/app/.env.local:ro
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=production # separate from NEXT_PUBLIC_ENV_MODE in .env.local
     command: ["npm", "run", "start"]
     depends_on:
       - backend

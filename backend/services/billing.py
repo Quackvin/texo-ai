@@ -4,6 +4,13 @@ Stripe Billing API implementation for Suna on top of Basejump. ONLY HAS SUPPOT F
 stripe listen --forward-to localhost:8000/api/billing/webhook
 """
 
+"""
+TEXO AI UPDATES:
+- moved model name aliases to constants.py
+- reduced to only 1 tier
+- Automatically create billing customer when "Manage Subscription" is clicked in the billing page
+"""
+
 from fastapi import APIRouter, HTTPException, Depends, Request
 from typing import Optional, Dict, Tuple
 import stripe
@@ -13,24 +20,12 @@ from utils.config import config, EnvMode
 from services.supabase import DBConnection
 from utils.auth_utils import get_current_user_id_from_jwt
 from pydantic import BaseModel
-from utils.constants import MODEL_ACCESS_TIERS, MODEL_NAME_ALIASES
+from utils.constants import MODEL_ACCESS_TIERS, MODEL_NAME_ALIASES, SUBSCRIPTION_TIERS
 # Initialize Stripe
 stripe.api_key = config.STRIPE_SECRET_KEY
 
 # Initialize router
 router = APIRouter(prefix="/billing", tags=["billing"])
-
-
-SUBSCRIPTION_TIERS = {
-    config.STRIPE_FREE_TIER_ID: {'name': 'free', 'minutes': 60},
-    config.STRIPE_TIER_2_20_ID: {'name': 'tier_2_20', 'minutes': 120},  # 2 hours
-    config.STRIPE_TIER_6_50_ID: {'name': 'tier_6_50', 'minutes': 360},  # 6 hours
-    config.STRIPE_TIER_12_100_ID: {'name': 'tier_12_100', 'minutes': 720},  # 12 hours
-    config.STRIPE_TIER_25_200_ID: {'name': 'tier_25_200', 'minutes': 1500},  # 25 hours
-    config.STRIPE_TIER_50_400_ID: {'name': 'tier_50_400', 'minutes': 3000},  # 50 hours
-    config.STRIPE_TIER_125_800_ID: {'name': 'tier_125_800', 'minutes': 7500},  # 125 hours
-    config.STRIPE_TIER_200_1000_ID: {'name': 'tier_200_1000', 'minutes': 12000},  # 200 hours
-}
 
 # Pydantic models for request/response validation
 class CreateCheckoutSessionRequest(BaseModel):
@@ -96,7 +91,7 @@ async def get_user_subscription(user_id: str) -> Optional[Dict]:
         logger.info(f"[billing.get_user_subscription()] User ID: {user_id} - Stripe Customer ID: {customer_id}")
         
         if not customer_id:
-            logger.info(f"No Stripe customer found for user {user_id}")
+            logger.info(f"[billing.get_user_subscription()] No Stripe customer found for user {user_id}")
             return None
             
         # Get all active subscriptions for the customer
@@ -104,11 +99,11 @@ async def get_user_subscription(user_id: str) -> Optional[Dict]:
             customer=customer_id,
             status='active'
         )
-        logger.info(f"Found subscriptions: {subscriptions}")
+        logger.info(f"[billing.get_user_subscription()] Found subscriptions: {subscriptions}")
         
         # Check if we have any subscriptions
         if not subscriptions or not subscriptions.get('data'):
-            logger.info(f"No active subscriptions found for user {user_id}")
+            logger.info(f"[billing.get_user_subscription()] No active subscriptions found for user {user_id}")
             return None
             
         # Filter subscriptions to only include our product's subscriptions
@@ -119,18 +114,13 @@ async def get_user_subscription(user_id: str) -> Optional[Dict]:
                 item = sub['items']['data'][0]
                 if item.get('price') and item['price'].get('id') in [
                     config.STRIPE_FREE_TIER_ID,
-                    config.STRIPE_TIER_2_20_ID,
-                    config.STRIPE_TIER_6_50_ID,
-                    config.STRIPE_TIER_12_100_ID,
-                    config.STRIPE_TIER_25_200_ID,
-                    config.STRIPE_TIER_50_400_ID,
-                    config.STRIPE_TIER_125_800_ID,
-                    config.STRIPE_TIER_200_1000_ID
+                    config.STRIPE_BASIC_TIER_ID
                 ]:
                     our_subscriptions.append(sub)
+        logger.info(f"[billing.get_user_subscription()] Filtered subscriptions: {our_subscriptions}")
         
         if not our_subscriptions:
-            logger.info(f"No active subscriptions found for user {user_id} for our product")
+            logger.info(f"[billing.get_user_subscription()] No active subscriptions found for user {user_id} for our product")
             return None
             
         # If there are multiple active subscriptions, we need to handle this
@@ -206,6 +196,7 @@ async def calculate_monthly_usage(client, user_id: str) -> float:
 async def get_allowed_models_for_user(client, user_id: str):
     """
     Get the list of models allowed for a user based on their subscription tier.
+    Default to free tier if no subscription is found.
     
     Returns:
         List of model names allowed for the user's subscription tier.
@@ -589,11 +580,15 @@ async def create_portal_session(
         # Get Supabase client
         db = DBConnection()
         client = await db.client
+
+        # Get user email from auth.users
+        user_result = await client.auth.admin.get_user_by_id(current_user_id)
+        if not user_result: raise HTTPException(status_code=404, detail="User not found")
+        email = user_result.user.email
         
         # Get customer ID
         customer_id = await get_stripe_customer_id(client, current_user_id)
-        if not customer_id:
-            raise HTTPException(status_code=404, detail="No billing customer found")
+        if not customer_id: customer_id = await create_stripe_customer(client, current_user_id, email)
         
         # Ensure the portal configuration has subscription_update enabled
         try:

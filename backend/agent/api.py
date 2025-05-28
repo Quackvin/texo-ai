@@ -1,3 +1,8 @@
+"""
+TEXO AI UPDATES:
+- moved model name aliases to constants.py
+"""
+
 from fastapi import APIRouter, HTTPException, Depends, Request, Body, File, UploadFile, Form
 from fastapi.responses import StreamingResponse
 import asyncio
@@ -10,6 +15,7 @@ import jwt
 from pydantic import BaseModel
 import tempfile
 import os
+from utils.constants import MODEL_NAME_ALIASES
 
 from agentpress.thread_manager import ThreadManager
 from services.supabase import DBConnection
