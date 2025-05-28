@@ -97,8 +97,8 @@ class Configuration:
     # Subscription tier IDs
     STRIPE_FREE_TIER_ID_PROD: str = ''
     STRIPE_FREE_TIER_ID_STAGING: str = ''
-    STRIPE_BASIC_TIER_ID_PROD: str = ''
-    STRIPE_BASIC_TIER_ID_STAGING: str = 'price_1RSXwBR7wSQ1yLTed8IJ4m4z'
+    STRIPE_BASIC_TIER_ID_PROD: str = 'price_1RSXwBR7wSQ1yLTed8IJ4m4z'
+    STRIPE_BASIC_TIER_ID_STAGING: str = 'price_1RTP85R7wSQ1yLTeRKDCD1PC'
     
     # Sandbox configuration
     SANDBOX_IMAGE_NAME = "kortix/suna:0.1.2"

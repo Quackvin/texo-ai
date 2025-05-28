@@ -8,6 +8,7 @@ stripe listen --forward-to localhost:8000/api/billing/webhook
 TEXO AI UPDATES:
 - moved model name aliases to constants.py
 - reduced to only 1 tier
+- Automatically create billing customer when "Manage Subscription" is clicked in the billing page
 """
 
 from fastapi import APIRouter, HTTPException, Depends, Request
@@ -87,6 +88,8 @@ async def get_user_subscription(user_id: str) -> Optional[Dict]:
         db = DBConnection()
         client = await db.client
         customer_id = await get_stripe_customer_id(client, user_id)
+        logger.info(f"Retrieved customer ID for user {user_id}: {customer_id}")
+        # print("Customer ID for user:", customer_id)
         
         if not customer_id:
             return None
@@ -96,6 +99,8 @@ async def get_user_subscription(user_id: str) -> Optional[Dict]:
             customer=customer_id,
             status='active'
         )
+        logger.info(f"Found {len(subscriptions['data'])} active subscriptions for user {user_id}")
+        logger.info(f"first subscription data: {subscriptions['data'][0] if subscriptions['data'] else 'No subscriptions found'}")
         # print("Found subscriptions:", subscriptions)
         
         # Check if we have any subscriptions
@@ -570,11 +575,15 @@ async def create_portal_session(
         # Get Supabase client
         db = DBConnection()
         client = await db.client
+
+        # Get user email from auth.users
+        user_result = await client.auth.admin.get_user_by_id(current_user_id)
+        if not user_result: raise HTTPException(status_code=404, detail="User not found")
+        email = user_result.user.email
         
         # Get customer ID
         customer_id = await get_stripe_customer_id(client, current_user_id)
-        if not customer_id:
-            raise HTTPException(status_code=404, detail="No billing customer found")
+        if not customer_id: customer_id = await create_stripe_customer(client, current_user_id, email)
         
         # Ensure the portal configuration has subscription_update enabled
         try:
@@ -669,6 +678,7 @@ async def get_subscription(
     try:
         # Get subscription from Stripe (this helper already handles filtering/cleanup)
         subscription = await get_user_subscription(current_user_id)
+        logger.info(f"Retrieved subscription for user {current_user_id}: {subscription}")
         # print("Subscription data for status:", subscription)
         
         if not subscription:

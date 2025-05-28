@@ -1709,7 +1709,6 @@ export const getSubscription = async (): Promise<SubscriptionStatus> => {
         `Error getting subscription: ${response.statusText} (${response.status})`,
       );
     }
-
     return response.json();
   } catch (error) {
     console.error('Failed to get subscription:', error);
