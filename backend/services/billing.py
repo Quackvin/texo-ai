@@ -93,8 +93,10 @@ async def get_user_subscription(user_id: str) -> Optional[Dict]:
         db = DBConnection()
         client = await db.client
         customer_id = await get_stripe_customer_id(client, user_id)
+        logger.info(f"[billing.get_user_subscription()] User ID: {user_id} - Stripe Customer ID: {customer_id}")
         
         if not customer_id:
+            logger.info(f"No Stripe customer found for user {user_id}")
             return None
             
         # Get all active subscriptions for the customer
@@ -102,10 +104,11 @@ async def get_user_subscription(user_id: str) -> Optional[Dict]:
             customer=customer_id,
             status='active'
         )
-        # print("Found subscriptions:", subscriptions)
+        logger.info(f"Found subscriptions: {subscriptions}")
         
         # Check if we have any subscriptions
         if not subscriptions or not subscriptions.get('data'):
+            logger.info(f"No active subscriptions found for user {user_id}")
             return None
             
         # Filter subscriptions to only include our product's subscriptions
@@ -127,6 +130,7 @@ async def get_user_subscription(user_id: str) -> Optional[Dict]:
                     our_subscriptions.append(sub)
         
         if not our_subscriptions:
+            logger.info(f"No active subscriptions found for user {user_id} for our product")
             return None
             
         # If there are multiple active subscriptions, we need to handle this
@@ -684,7 +688,7 @@ async def get_subscription(
     try:
         # Get subscription from Stripe (this helper already handles filtering/cleanup)
         subscription = await get_user_subscription(current_user_id)
-        # print("Subscription data for status:", subscription)
+        logger.info(f"[billing.get_subscription()] User ID: {current_user_id} - Subscription data: {subscription}")
         
         if not subscription:
             # Default to free tier status if no active subscription for our product

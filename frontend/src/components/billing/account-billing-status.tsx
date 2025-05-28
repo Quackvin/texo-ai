@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { PricingSection } from '@/components/home/sections/pricing-section';
 import { isLocalMode } from '@/lib/config';
 import {
   getSubscription,
@@ -31,6 +30,7 @@ export default function AccountBillingStatus({ accountId, returnUrl }: Props) {
 
       try {
         const data = await getSubscription();
+        console.log('Fetched subscription data:', data);
         setSubscriptionData(data);
         setError(null);
       } catch (err) {
@@ -128,6 +128,9 @@ export default function AccountBillingStatus({ accountId, returnUrl }: Props) {
         <>
           <div className="mb-6">
             <div className="rounded-lg border bg-background p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="text-sm font-medium text-foreground/90">
+                Current Plan: {planName}
+              </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium text-foreground/90">
                   Agent Usage This Month
@@ -139,9 +142,6 @@ export default function AccountBillingStatus({ accountId, returnUrl }: Props) {
               </div>
             </div>
           </div>
-
-          {/* Plans Comparison */}
-          <PricingSection returnUrl={returnUrl} showTitleAndTabs={false} />
 
           {/* Manage Subscription Button */}
           <Button
@@ -176,9 +176,6 @@ export default function AccountBillingStatus({ accountId, returnUrl }: Props) {
               </div>
             </div>
           </div>
-
-          {/* Plans Comparison */}
-          <PricingSection returnUrl={returnUrl} showTitleAndTabs={false} />
 
           {/* Manage Subscription Button */}
           <Button
