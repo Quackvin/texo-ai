@@ -590,12 +590,14 @@ async def create_portal_session(
         # Get customer ID
         customer_id = await get_stripe_customer_id(client, current_user_id)
         if not customer_id: customer_id = await create_stripe_customer(client, current_user_id, email)
-        
+        logger.info(f"[billing.create_portal_session()] User ID: {current_user_id} - Stripe Customer ID: {customer_id}")
+
         # Ensure the portal configuration has subscription_update enabled
         try:
             # First, check if we have a configuration that already enables subscription update
             configurations = stripe.billing_portal.Configuration.list(limit=100)
             active_config = None
+            logger.info(f"[billing.create_portal_session()] Found portal configurations: {configurations}")
             
             # Look for a configuration with subscription_update enabled
             for config in configurations.get('data', []):
@@ -662,11 +664,14 @@ async def create_portal_session(
             "customer": customer_id,
             "return_url": request.return_url
         }
+        logger.info(f"[billing.create_portal_session()] Creating portal session for customer {customer_id} with return URL: {request.return_url}")
         
         # Add configuration_id if we found or created one with subscription_update enabled
         if active_config:
+            logger.info(f"Using active portal configuration: {active_config['id']}")
             portal_params["configuration"] = active_config['id']
-        
+        logger.info(f"[billing.create_portal_session()] if active passed")
+
         # Create the session
         session = stripe.billing_portal.Session.create(**portal_params)
         
