@@ -99,7 +99,7 @@ async def get_user_subscription(user_id: str) -> Optional[Dict]:
             customer=customer_id,
             status='active'
         )
-        logger.info(f"[billing.get_user_subscription()] Found subscriptions: {subscriptions}")
+        logger.info(f"[billing.get_user_subscription()] Found subscriptions: {len(subscriptions.get('data', []))}")
         
         # Check if we have any subscriptions
         if not subscriptions or not subscriptions.get('data'):
@@ -117,7 +117,7 @@ async def get_user_subscription(user_id: str) -> Optional[Dict]:
                     config.STRIPE_BASIC_TIER_ID
                 ]:
                     our_subscriptions.append(sub)
-        logger.info(f"[billing.get_user_subscription()] Filtered subscriptions: {our_subscriptions}")
+        logger.info(f"[billing.get_user_subscription()] Filtered subscriptions: {len(our_subscriptions)}")
         
         if not our_subscriptions:
             logger.info(f"[billing.get_user_subscription()] No active subscriptions found for user {user_id} for our product")
@@ -597,7 +597,7 @@ async def create_portal_session(
             # First, check if we have a configuration that already enables subscription update
             configurations = stripe.billing_portal.Configuration.list(limit=100)
             active_config = None
-            logger.info(f"[billing.create_portal_session()] Found portal configurations: {configurations}")
+            logger.info(f"[billing.create_portal_session()] Found portal configurations: {len(configurations.get('data', []))} configurations")
             
             # Look for a configuration with subscription_update enabled
             for config in configurations.get('data', []):
@@ -689,7 +689,7 @@ async def get_subscription(
     try:
         # Get subscription from Stripe (this helper already handles filtering/cleanup)
         subscription = await get_user_subscription(current_user_id)
-        logger.info(f"[billing.get_subscription()] User ID: {current_user_id} - Subscription data: {subscription}")
+        logger.info(f"[billing.get_subscription()] User ID: {current_user_id} - Subscription ID: {subscription['id']}")
         
         if not subscription:
             # Default to free tier status if no active subscription for our product
