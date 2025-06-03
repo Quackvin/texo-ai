@@ -111,7 +111,7 @@ allow_origin_regex = None
 
 # Add staging-specific origins
 if config.ENV_MODE == EnvMode.STAGING:
-    allowed_origins.append("http://localhost") # might not be needed
+    allowed_origins.append("http://stg.texoai.com.au") # might not be needed
     
 # Add local-specific origins
 if config.ENV_MODE == EnvMode.LOCAL:
