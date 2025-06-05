@@ -686,10 +686,9 @@ async def get_subscription(
     current_user_id: str = Depends(get_current_user_id_from_jwt)
 ):
     """Get the current subscription status for the current user, including scheduled changes."""
-    try:
-        # Get subscription from Stripe (this helper already handles filtering/cleanup)
+    try:        # Get subscription from Stripe (this helper already handles filtering/cleanup)
         subscription = await get_user_subscription(current_user_id)
-        logger.info(f"[billing.get_subscription()] User ID: {current_user_id} - Subscription ID: {subscription['id']}")
+        logger.info(f"[billing.get_subscription()] User ID: {current_user_id} - Subscription ID: {subscription['id'] if subscription else 'No Subscription'}")
         
         if not subscription:
             # Default to free tier status if no active subscription for our product
