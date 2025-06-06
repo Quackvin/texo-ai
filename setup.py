@@ -6,6 +6,8 @@ import platform
 import subprocess
 from getpass import getpass
 import re
+import json
+
 
 IS_WINDOWS = platform.system() == 'Windows'
 
@@ -35,6 +37,44 @@ def print_banner():
    Setup Wizard
 {Colors.ENDC}
 """)
+
+PROGRESS_FILE = '.setup_progress'
+
+def save_progress(step):
+    with open(PROGRESS_FILE, 'w') as f:
+        f.write(str(step))
+
+def load_progress():
+    if os.path.exists(PROGRESS_FILE):
+        with open(PROGRESS_FILE, 'r') as f:
+            try:
+                return int(f.read().strip())
+            except ValueError:
+                return 0
+    return 0
+
+def clear_progress():
+    if os.path.exists(PROGRESS_FILE):
+        os.remove(PROGRESS_FILE)
+
+ENV_DATA_FILE = '.setup_env.json'
+
+def save_env_data(env_data):
+    with open(ENV_DATA_FILE, 'w') as f:
+        json.dump(env_data, f)
+
+def load_env_data():
+    if os.path.exists(ENV_DATA_FILE):
+        with open(ENV_DATA_FILE, 'r') as f:
+            return json.load(f)
+    return {
+        'supabase': {},
+        'daytona': {},
+        'llm': {},
+        'search': {},
+        'rapidapi': {}
+    }
+
 
 def print_step(step_num, total_steps, step_name):
     """Print a step header"""
@@ -197,7 +237,7 @@ def collect_daytona_info():
     print_info("Then, generate an API key from 'Keys' menu")
     print_info("After that, go to Images (https://app.daytona.io/dashboard/images)")
     print_info("Click '+ Create Image'")
-    print_info(f"Enter 'kortix/suna:0.1.2.8' as the image name")
+    print_info(f"Enter 'kortix/suna:0.1.3' as the image name")
     print_info(f"Set '/usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf' as the Entrypoint")
 
     input("Press Enter to continue once you've completed these steps...")
@@ -806,11 +846,12 @@ def final_instructions(use_docker=True, env_vars=None):
         print_info("4. Once all services are running, access Texo AI at: http://localhost:3000")
         print_info("5. Create an account using Supabase authentication to start using Texo AI")
 
+# Then update your main() function as follows:
+
 def main():
-    total_steps = 8  # Reduced by 1 since we're skipping the clone step
-    current_step = 1
-    
-    # Print banner
+    total_steps = 8
+    current_step = load_progress() + 1
+
     print_banner()
     print("This wizard will guide you through setting up Texo AI, an open-source generalist AI agent.\n")
     
