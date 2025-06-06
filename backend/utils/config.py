@@ -101,7 +101,7 @@ class Configuration:
     STRIPE_BASIC_TIER_ID_STAGING: str = 'price_1RTP85R7wSQ1yLTeRKDCD1PC'
     
     # Sandbox configuration
-    SANDBOX_IMAGE_NAME = "kortix/suna:0.1.2"
+    SANDBOX_IMAGE_NAME = "kortix/suna:0.1.3"
     SANDBOX_ENTRYPOINT = "/usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf"
 
     # LangFuse configuration
