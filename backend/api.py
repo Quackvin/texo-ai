@@ -106,17 +106,15 @@ async def log_requests_middleware(request: Request, call_next):
         raise
 
 # Define allowed origins based on environment
-allowed_origins = ["https://app.texoai.com.au", "http://app.texoai.com.au", "http://localhost:3000"]
+allowed_origins = ["https://app.texoai.com.au", "http://app.texoai.com.au"]
 allow_origin_regex = None
 
 # Add staging-specific origins
-if config.ENV_MODE == EnvMode.STAGING:
-    allowed_origins.append("http://localhost") # might not be needed
+if config.ENV_MODE in (EnvMode.STAGING, EnvMode.LOCAL):
+    allowed_origins.append("http://stg.texoai.com.au")
+    allowed_origins.append("http://dev.texoai.com.au")
+    allowed_origins.append("http://localhost:3000")
     
-# Add local-specific origins
-if config.ENV_MODE == EnvMode.LOCAL:
-    allowed_origins.append("http://localhost") # using port 80 for front end now
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
