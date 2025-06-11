@@ -118,7 +118,6 @@ if config.ENV_MODE in (EnvMode.STAGING, EnvMode.LOCAL):
     allowed_origins.append("http://stg.texoai.com.au")
     allowed_origins.append("http://dev.texoai.com.au")
     allowed_origins.append("http://localhost:3000")
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,

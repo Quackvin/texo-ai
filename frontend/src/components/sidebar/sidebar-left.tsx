@@ -7,7 +7,7 @@ import { Bot, Menu, Store } from 'lucide-react';
 import { NavAgents } from '@/components/sidebar/nav-agents';
 import { NavUserWithTeams } from '@/components/sidebar/nav-user-with-teams';
 import { KortixLogo } from '@/components/sidebar/kortix-logo';
-import { CTACard } from '@/components/sidebar/cta';
+// import { CTACard } from '@/components/sidebar/cta';
 import {
   Sidebar,
   SidebarContent,
@@ -174,11 +174,11 @@ export function SidebarLeft({
         )}
         <NavAgents />
       </SidebarContent>
-      {state !== 'collapsed' && (
+      {/* {state !== 'collapsed' && (
         <div className="px-3 py-2">
           <CTACard />
         </div>
-      )}
+      )} */}
       <SidebarFooter>
         {state === 'collapsed' && (
           <div className="mt-2 flex justify-center">

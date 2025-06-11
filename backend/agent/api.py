@@ -1,3 +1,8 @@
+"""
+TEXO AI UPDATES:
+- moved model name aliases to constants.py
+"""
+
 from fastapi import APIRouter, HTTPException, Depends, Request, Body, File, UploadFile, Form, Query
 from fastapi.responses import StreamingResponse
 import asyncio
@@ -10,6 +15,7 @@ import jwt
 from pydantic import BaseModel
 import tempfile
 import os
+from utils.constants import MODEL_NAME_ALIASES
 
 from agentpress.thread_manager import ThreadManager
 from services.supabase import DBConnection
@@ -31,7 +37,6 @@ instance_id = None # Global instance ID for this backend instance
 
 # TTL for Redis response lists (24 hours)
 REDIS_RESPONSE_LIST_TTL = 3600 * 24
-
 
 class AgentStartRequest(BaseModel):
     model_name: Optional[str] = None  # Will be set from config.MODEL_TO_USE in the endpoint
@@ -419,6 +424,7 @@ async def start_agent(
         except Exception as e:
             logger.warning(f"Failed to update thread agent_id: {e}")
 
+    logger.info(f"[api.start_agent()] account_id: {account_id}, model_name: {model_name}")
     can_use, model_message, allowed_models = await can_use_model(client, account_id, model_name)
     if not can_use:
         raise HTTPException(status_code=403, detail={"message": model_message, "allowed_models": allowed_models})
