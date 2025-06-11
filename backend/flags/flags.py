@@ -123,6 +123,9 @@ async def set_flag(key: str, enabled: bool, description: str = "") -> bool:
 
 
 async def is_enabled(key: str) -> bool:
+    #  Special case for custom agents
+    if key == "custom_agents":
+        return True
     return await get_flag_manager().is_enabled(key)
 
 
