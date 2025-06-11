@@ -477,12 +477,20 @@ export const useModelSelection = () => {
     refreshCustomModels,
     canAccessModel: (modelId: string) => {
       if (isLocalMode()) return true;
-      const model = MODEL_OPTIONS.find(m => m.id === modelId);
-      return model ? canAccessModel(subscriptionStatus, model.requiresSubscription) : false;
+      return subscriptionStatus === 'active' ? true : false;
     },
-    isSubscriptionRequired: (modelId: string) => {
-      return MODEL_OPTIONS.find(m => m.id === modelId)?.requiresSubscription || false;
+    isSubscriptionRequired: () => {
+      if (isLocalMode()) return false;
+      return true;
     }
+    // canAccessModel: (modelId: string) => {
+    //   if (isLocalMode()) return true;
+    //   const model = MODEL_OPTIONS.find(m => m.id === modelId);
+    //   return model ? canAccessModel(subscriptionStatus, model.requiresSubscription) : false;
+    // },
+    // isSubscriptionRequired: (modelId: string) => {
+    //   return MODEL_OPTIONS.find(m => m.id === modelId)?.requiresSubscription || false;
+    // }
   };
 };
 

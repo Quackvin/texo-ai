@@ -31,6 +31,7 @@ export default function AccountBillingStatus({ accountId, returnUrl }: Props) {
 
       try {
         const data = await getSubscription();
+        console.log('Fetched subscription data:', data);
         setSubscriptionData(data);
         setError(null);
       } catch (err) {
@@ -108,88 +109,94 @@ export default function AccountBillingStatus({ accountId, returnUrl }: Props) {
     );
   }
 
-  const isPlan = (planId?: string) => {
-    return subscriptionData?.plan_name === planId;
+  const isPlan = (planName?: string) => {
+    return subscriptionData?.plan_name.toLowerCase().includes(planName.toLowerCase());
   };
 
   const planName = isPlan('free')
     ? 'Free'
-    : isPlan('base')
-      ? 'Pro'
-      : isPlan('extra')
-        ? 'Enterprise'
-        : 'Unknown';
+    : isPlan('basic')
+      ? 'Basic'
+      : 'Unknown';  
 
   return (
     <div className="rounded-xl border shadow-sm bg-card p-6">
       <h2 className="text-xl font-semibold mb-4">Billing Status</h2>
 
       {subscriptionData ? (
-        <>
-          <div className="mb-6">
-            <div className="rounded-lg border bg-background p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-foreground/90">
-                  Agent Usage This Month
-                </span>
-                <span className="text-sm font-medium text-card-title">
-                  {subscriptionData.current_usage?.toFixed(2) || '0'} /{' '}
-                  {subscriptionData.minutes_limit || '0'} minutes
-                </span>
-              </div>
-            </div>
-          </div>
+  <>
+    <div className="mb-6">
+      <div className="rounded-lg border bg-background p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex justify-between items-center">
+          <span className="text-sm font-medium text-foreground/90">
+            Current Plan
+          </span>
+          <span className="text-sm font-medium text-card-title">
+            {planName}
+          </span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-sm font-medium text-foreground/90">
+            Agent Usage This Month
+          </span>
+          <span className="text-sm font-medium text-card-title">
+            {subscriptionData.current_usage?.toFixed(2) || '0'} /{' '}
+            {subscriptionData.minutes_limit || '0'} minutes
+          </span>
+        </div>
+      </div>
+    </div>
+
+    {/* Plans Comparison */}
+          <PricingSection returnUrl={returnUrl} showTitleAndTabs={false} />
+
+    {/* Manage Subscription Button */}
+    <Button
+      onClick={handleManageSubscription}
+      disabled={isManaging}
+      className="w-full bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all"
+    >
+      {isManaging ? 'Loading...' : 'Manage Subscription'}
+    </Button>
+  </>
+) : (
+  <>
+    <div className="mb-6">
+      <div className="rounded-lg border bg-background p-4 gap-4">
+        <div className="flex justify-between items-center">
+          <span className="text-sm font-medium text-foreground/90">
+            Current Plan
+          </span>
+          <span className="text-sm font-medium text-card-title">
+            {planName}
+          </span>
+        </div>
+        
+        <div className="flex justify-between items-center">
+          <span className="text-sm font-medium text-foreground/90">
+            Agent Usage This Month
+          </span>
+          <span className="text-sm font-medium text-card-title">
+            {subscriptionData?.current_usage?.toFixed(2) || '0'} /{' '}
+            {subscriptionData?.minutes_limit || '0'} minutes
+          </span>
+        </div>
+      </div>
+    </div>
 
           {/* Plans Comparison */}
           <PricingSection returnUrl={returnUrl} showTitleAndTabs={false} />
 
-          {/* Manage Subscription Button */}
-          <Button
-            onClick={handleManageSubscription}
-            disabled={isManaging}
-            className="w-full bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all"
-          >
-            {isManaging ? 'Loading...' : 'Manage Subscription'}
-          </Button>
-        </>
-      ) : (
-        <>
-          <div className="mb-6">
-            <div className="rounded-lg border bg-background p-4 gap-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-foreground/90">
-                  Current Plan
-                </span>
-                <span className="text-sm font-medium text-card-title">
-                  Free
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-foreground/90">
-                  Agent Usage This Month
-                </span>
-                <span className="text-sm font-medium text-card-title">
-                  {subscriptionData?.current_usage?.toFixed(2) || '0'} /{' '}
-                  {subscriptionData?.minutes_limit || '0'} minutes
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Plans Comparison */}
-          <PricingSection returnUrl={returnUrl} showTitleAndTabs={false} />
-
-          {/* Manage Subscription Button */}
-          <Button
-            onClick={handleManageSubscription}
-            disabled={isManaging}
-            className="w-full bg-primary text-white hover:bg-primary/90 shadow-md hover:shadow-lg transition-all"
-          >
-            {isManaging ? 'Loading...' : 'Manage Subscription'}
-          </Button>
-        </>
-      )}
+    {/* Manage Subscription Button */}
+    <Button
+      onClick={handleManageSubscription}
+      disabled={isManaging}
+      className="w-full bg-primary text-white hover:bg-primary/90 shadow-md hover:shadow-lg transition-all"
+    >
+      {isManaging ? 'Loading...' : 'Manage Subscription'}
+    </Button>
+  </>
+)}
     </div>
   );
 }

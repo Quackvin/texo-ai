@@ -14,6 +14,11 @@ Usage:
     env_mode = config.ENV_MODE
 """
 
+"""
+TEXO AI UDPATES:
+- Reduced to only 1 tier
+"""
+
 import os
 from enum import Enum
 from typing import Dict, Any, Optional, get_type_hints, Union
@@ -39,83 +44,14 @@ class Configuration:
     # Environment mode
     ENV_MODE: EnvMode = EnvMode.LOCAL
     
-    # Subscription tier IDs - Production
-    STRIPE_FREE_TIER_ID_PROD: str = 'price_1RILb4G6l1KZGqIrK4QLrx9i'
-    STRIPE_TIER_2_20_ID_PROD: str = 'price_1RILb4G6l1KZGqIrhomjgDnO'
-    STRIPE_TIER_6_50_ID_PROD: str = 'price_1RILb4G6l1KZGqIr5q0sybWn'
-    STRIPE_TIER_12_100_ID_PROD: str = 'price_1RILb4G6l1KZGqIr5Y20ZLHm'
-    STRIPE_TIER_25_200_ID_PROD: str = 'price_1RILb4G6l1KZGqIrGAD8rNjb'
-    STRIPE_TIER_50_400_ID_PROD: str = 'price_1RILb4G6l1KZGqIruNBUMTF1'
-    STRIPE_TIER_125_800_ID_PROD: str = 'price_1RILb3G6l1KZGqIrbJA766tN'
-    STRIPE_TIER_200_1000_ID_PROD: str = 'price_1RILb3G6l1KZGqIrmauYPOiN'
-    
-    # Subscription tier IDs - Staging
-    STRIPE_FREE_TIER_ID_STAGING: str = 'price_1RIGvuG6l1KZGqIrw14abxeL'
-    STRIPE_TIER_2_20_ID_STAGING: str = 'price_1RIGvuG6l1KZGqIrCRu0E4Gi'
-    STRIPE_TIER_6_50_ID_STAGING: str = 'price_1RIGvuG6l1KZGqIrvjlz5p5V'
-    STRIPE_TIER_12_100_ID_STAGING: str = 'price_1RIGvuG6l1KZGqIrT6UfgblC'
-    STRIPE_TIER_25_200_ID_STAGING: str = 'price_1RIGvuG6l1KZGqIrOVLKlOMj'
-    STRIPE_TIER_50_400_ID_STAGING: str = 'price_1RIKNgG6l1KZGqIrvsat5PW7'
-    STRIPE_TIER_125_800_ID_STAGING: str = 'price_1RIKNrG6l1KZGqIrjKT0yGvI'
-    STRIPE_TIER_200_1000_ID_STAGING: str = 'price_1RIKQ2G6l1KZGqIrum9n8SI7'
-    
-    # Computed subscription tier IDs based on environment
-    @property
-    def STRIPE_FREE_TIER_ID(self) -> str:
-        if self.ENV_MODE == EnvMode.STAGING:
-            return self.STRIPE_FREE_TIER_ID_STAGING
-        return self.STRIPE_FREE_TIER_ID_PROD
-    
-    @property
-    def STRIPE_TIER_2_20_ID(self) -> str:
-        if self.ENV_MODE == EnvMode.STAGING:
-            return self.STRIPE_TIER_2_20_ID_STAGING
-        return self.STRIPE_TIER_2_20_ID_PROD
-    
-    @property
-    def STRIPE_TIER_6_50_ID(self) -> str:
-        if self.ENV_MODE == EnvMode.STAGING:
-            return self.STRIPE_TIER_6_50_ID_STAGING
-        return self.STRIPE_TIER_6_50_ID_PROD
-    
-    @property
-    def STRIPE_TIER_12_100_ID(self) -> str:
-        if self.ENV_MODE == EnvMode.STAGING:
-            return self.STRIPE_TIER_12_100_ID_STAGING
-        return self.STRIPE_TIER_12_100_ID_PROD
-    
-    @property
-    def STRIPE_TIER_25_200_ID(self) -> str:
-        if self.ENV_MODE == EnvMode.STAGING:
-            return self.STRIPE_TIER_25_200_ID_STAGING
-        return self.STRIPE_TIER_25_200_ID_PROD
-    
-    @property
-    def STRIPE_TIER_50_400_ID(self) -> str:
-        if self.ENV_MODE == EnvMode.STAGING:
-            return self.STRIPE_TIER_50_400_ID_STAGING
-        return self.STRIPE_TIER_50_400_ID_PROD
-    
-    @property
-    def STRIPE_TIER_125_800_ID(self) -> str:
-        if self.ENV_MODE == EnvMode.STAGING:
-            return self.STRIPE_TIER_125_800_ID_STAGING
-        return self.STRIPE_TIER_125_800_ID_PROD
-    
-    @property
-    def STRIPE_TIER_200_1000_ID(self) -> str:
-        if self.ENV_MODE == EnvMode.STAGING:
-            return self.STRIPE_TIER_200_1000_ID_STAGING
-        return self.STRIPE_TIER_200_1000_ID_PROD
-    
     # LLM API keys
     ANTHROPIC_API_KEY: str = None
     OPENAI_API_KEY: Optional[str] = None
     GROQ_API_KEY: Optional[str] = None
     OPENROUTER_API_KEY: Optional[str] = None
     OPENROUTER_API_BASE: Optional[str] = "https://openrouter.ai/api/v1"
-    OR_SITE_URL: Optional[str] = "https://kortix.ai"
-    OR_APP_NAME: Optional[str] = "Kortix AI"    
+    OR_SITE_URL: Optional[str] = "https://texoai.com.au"
+    OR_APP_NAME: Optional[str] = "Texo AI"    
     
     # AWS Bedrock credentials
     AWS_ACCESS_KEY_ID: Optional[str] = None
@@ -155,8 +91,14 @@ class Configuration:
     STRIPE_DEFAULT_TRIAL_DAYS: int = 14
     
     # Stripe Product IDs
-    STRIPE_PRODUCT_ID_PROD: str = 'prod_SCl7AQ2C8kK1CD'
-    STRIPE_PRODUCT_ID_STAGING: str = 'prod_SCgIj3G7yPOAWY'
+    STRIPE_PRODUCT_ID_PROD: str = ''
+    STRIPE_PRODUCT_ID_STAGING: str = 'prod_SNIXohjQMbh8qv'
+    
+    # Subscription tier IDs
+    STRIPE_FREE_TIER_ID_PROD: str = ''
+    STRIPE_FREE_TIER_ID_STAGING: str = ''
+    STRIPE_BASIC_TIER_ID_PROD: str = 'price_1RSXwBR7wSQ1yLTed8IJ4m4z'
+    STRIPE_BASIC_TIER_ID_STAGING: str = 'price_1RTP85R7wSQ1yLTeRKDCD1PC'
     
     # Sandbox configuration
     SANDBOX_IMAGE_NAME = "kortix/suna:0.1.3"
@@ -172,6 +114,19 @@ class Configuration:
         if self.ENV_MODE == EnvMode.STAGING:
             return self.STRIPE_PRODUCT_ID_STAGING
         return self.STRIPE_PRODUCT_ID_PROD
+    
+    # Price IDs for subscription tiers based on environment
+    @property
+    def STRIPE_FREE_TIER_ID(self) -> str:
+        if self.ENV_MODE == EnvMode.STAGING:
+            return self.STRIPE_FREE_TIER_ID_STAGING
+        return self.STRIPE_FREE_TIER_ID_PROD
+    
+    @property
+    def STRIPE_BASIC_TIER_ID(self) -> str:
+        if self.ENV_MODE == EnvMode.STAGING:
+            return self.STRIPE_BASIC_TIER_ID_STAGING
+        return self.STRIPE_BASIC_TIER_ID_PROD
     
     def __init__(self):
         """Initialize configuration by loading from environment variables."""
