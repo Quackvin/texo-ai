@@ -590,6 +590,7 @@ async def create_portal_session(
         customer_id = await get_stripe_customer_id(client, current_user_id)
         if not customer_id:
             raise HTTPException(status_code=404, detail="No billing customer found")
+        logger.info(f"[billing.create_portal_session()] User ID: {current_user_id} - Stripe Customer ID: {customer_id}")
         
         # Ensure the portal configuration has subscription_update enabled
         try:
@@ -662,9 +663,11 @@ async def create_portal_session(
             "customer": customer_id,
             "return_url": request.return_url
         }
+        logger.info(f"[billing.create_portal_session()] Creating portal session for customer {customer_id} with return URL: {request.return_url}")
         
         # Add configuration_id if we found or created one with subscription_update enabled
         if active_config:
+            logger.info(f"Using active portal configuration: {active_config['id']}")
             portal_params["configuration"] = active_config['id']
         
         # Create the session
@@ -684,7 +687,7 @@ async def get_subscription(
     try:
         # Get subscription from Stripe (this helper already handles filtering/cleanup)
         subscription = await get_user_subscription(current_user_id)
-        # print("Subscription data for status:", subscription)
+        logger.info(f"[billing.get_subscription()] User ID: {current_user_id} - Subscription ID: {subscription['id'] if subscription else 'No Subscription'}")
         
         if not subscription:
             # Default to free tier status if no active subscription for our product
