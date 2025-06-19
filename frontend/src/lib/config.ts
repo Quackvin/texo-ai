@@ -13,14 +13,13 @@ export interface SubscriptionTierData {
 
 // Subscription tiers structure
 export interface SubscriptionTiers {
-  FREE: SubscriptionTierData;
-  TIER_2_20: SubscriptionTierData;
-  TIER_6_50: SubscriptionTierData;
-  TIER_12_100: SubscriptionTierData;
-  TIER_25_200: SubscriptionTierData;
-  TIER_50_400: SubscriptionTierData;
-  TIER_125_800: SubscriptionTierData;
-  TIER_200_1000: SubscriptionTierData;
+  SPARK: SubscriptionTierData;
+  BOOST: SubscriptionTierData;
+  ASCEND: SubscriptionTierData;
+  PRO: SubscriptionTierData;
+  ELITE: SubscriptionTierData;
+  ULTIMATE: SubscriptionTierData;
+  ENTERPRISE: SubscriptionTierData;
 }
 
 // Configuration object
@@ -32,73 +31,65 @@ interface Config {
 
 // Production tier IDs
 const PROD_TIERS: SubscriptionTiers = {
-  FREE: {
-    priceId: 'price_1RILb4G6l1KZGqIrK4QLrx9i',
-    name: 'Free',
+  SPARK: {
+    priceId: 'price_1RbMFsJ07oA1wY5pn9qujLZK',
+    name: 'Spark',
   },
-  TIER_2_20: {
-    priceId: 'price_1RILb4G6l1KZGqIrhomjgDnO',
-    name: '2h/$20',
+  BOOST: {
+    priceId: 'price_1RbMG3J07oA1wY5p3HpVIPyq',
+    name: 'Boost',
   },
-  TIER_6_50: {
-    priceId: 'price_1RILb4G6l1KZGqIr5q0sybWn',
-    name: '6h/$50',
+  ASCEND: {
+    priceId: 'price_1RbMG9J07oA1wY5pfLic42hS',
+    name: 'Ascend',
   },
-  TIER_12_100: {
-    priceId: 'price_1RILb4G6l1KZGqIr5Y20ZLHm',
-    name: '12h/$100',
+  PRO: {
+    priceId: 'price_1RbMGLJ07oA1wY5pHEGapf1X',
+    name: 'Pro',
   },
-  TIER_25_200: {
-    priceId: 'price_1RILb4G6l1KZGqIrGAD8rNjb',
-    name: '25h/$200',
+  ELITE: {
+    priceId: 'price_1RbMGRJ07oA1wY5pECiIJMck',
+    name: 'Elite',
   },
-  TIER_50_400: {
-    priceId: 'price_1RILb4G6l1KZGqIruNBUMTF1',
-    name: '50h/$400',
+  ULTIMATE: {
+    priceId: 'price_1RbMGXJ07oA1wY5pWyyWRie1',
+    name: 'Ultimate',
   },
-  TIER_125_800: {
-    priceId: 'price_1RILb3G6l1KZGqIrbJA766tN',
-    name: '125h/$800',
-  },
-  TIER_200_1000: {
-    priceId: 'price_1RILb3G6l1KZGqIrmauYPOiN',
-    name: '200h/$1000',
+  ENTERPRISE: {
+    priceId: 'price_1RbMGcJ07oA1wY5pVy0yBgnl',
+    name: 'Enterprise',
   },
 } as const;
 
 // Staging tier IDs
 const STAGING_TIERS: SubscriptionTiers = {
-  FREE: {
-    priceId: 'price_1RIGvuG6l1KZGqIrw14abxeL',
-    name: 'Free',
+  SPARK: {
+    priceId: 'price_1RbMFsJ07oA1wY5pn9qujLZK',
+    name: 'Spark',
   },
-  TIER_2_20: {
-    priceId: 'price_1RIGvuG6l1KZGqIrCRu0E4Gi',
-    name: '2h/$20',
+  BOOST: {
+    priceId: 'price_1RbMG3J07oA1wY5p3HpVIPyq',
+    name: 'Boost',
   },
-  TIER_6_50: {
-    priceId: 'price_1RIGvuG6l1KZGqIrvjlz5p5V',
-    name: '6h/$50',
+  ASCEND: {
+    priceId: 'price_1RbMG9J07oA1wY5pfLic42hS',
+    name: 'Ascend',
   },
-  TIER_12_100: {
-    priceId: 'price_1RIGvuG6l1KZGqIrT6UfgblC',
-    name: '12h/$100',
+  PRO: {
+    priceId: 'price_1RbMGLJ07oA1wY5pHEGapf1X',
+    name: 'Pro',
   },
-  TIER_25_200: {
-    priceId: 'price_1RIGvuG6l1KZGqIrOVLKlOMj',
-    name: '25h/$200',
+  ELITE: {
+    priceId: 'price_1RbMGRJ07oA1wY5pECiIJMck',
+    name: 'Elite',
   },
-  TIER_50_400: {
-    priceId: 'price_1RIKNgG6l1KZGqIrvsat5PW7',
-    name: '50h/$400',
+  ULTIMATE: {
+    priceId: 'price_1RbMGXJ07oA1wY5pWyyWRie1',
+    name: 'Ultimate',
   },
-  TIER_125_800: {
-    priceId: 'price_1RIKNrG6l1KZGqIrjKT0yGvI',
-    name: '125h/$800',
-  },
-  TIER_200_1000: {
-    priceId: 'price_1RIKQ2G6l1KZGqIrum9n8SI7',
-    name: '200h/$1000',
+  ENTERPRISE: {
+    priceId: 'price_1RbMGcJ07oA1wY5pVy0yBgnl',
+    name: 'Enterprise',
   },
 } as const;
 

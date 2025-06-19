@@ -110,14 +110,20 @@ export default function AccountBillingStatus({ accountId, returnUrl }: Props) {
   }
 
   const isPlan = (planName?: string) => {
+    if (!planName) return false;
     return subscriptionData?.plan_name.toLowerCase().includes(planName.toLowerCase());
   };
 
-  const planName = isPlan('free')
-    ? 'Free'
-    : isPlan('basic')
-      ? 'Basic'
-      : 'Unknown';  
+  const planName = (() => {
+    if (isPlan('spark')) return 'Spark';
+    if (isPlan('boost')) return 'Boost';
+    if (isPlan('ascend')) return 'Ascend';
+    if (isPlan('pro')) return 'Pro';
+    if (isPlan('elite')) return 'Elite';
+    if (isPlan('ultimate')) return 'Ultimate';
+    if (isPlan('enterprise')) return 'Enterprise';
+    return subscriptionData?.plan_name || 'Unknown';
+  })();
 
   return (
     <div className="rounded-xl border shadow-sm bg-card p-6">

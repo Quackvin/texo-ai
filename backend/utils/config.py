@@ -85,20 +85,30 @@ class Configuration:
     FIRECRAWL_URL: Optional[str] = "https://api.firecrawl.dev"
     
     # Stripe configuration
-    STRIPE_SECRET_KEY: Optional[str] = None
-    STRIPE_WEBHOOK_SECRET: Optional[str] = None
-    STRIPE_DEFAULT_PLAN_ID: Optional[str] = None
-    STRIPE_DEFAULT_TRIAL_DAYS: int = 14
-    
+    STRIPE_SECRET_KEY: Optional[str] = ""
+    STRIPE_WEBHOOK_SECRET: Optional[str] = ""
+    STRIPE_DEFAULT_PLAN_ID: Optional[str] = "price_1RbMG9J07oA1wY5pfLic42hS"
+    STRIPE_DEFAULT_TRIAL_DAYS: int = 0
+
     # Stripe Product IDs
-    STRIPE_PRODUCT_ID_PROD: str = ''
+    STRIPE_PRODUCT_ID_PROD: str = 'prod_SWP4HMjRj8aksM'
     STRIPE_PRODUCT_ID_STAGING: str = 'prod_SNIXohjQMbh8qv'
-    
+
     # Subscription tier IDs
-    STRIPE_FREE_TIER_ID_PROD: str = ''
-    STRIPE_FREE_TIER_ID_STAGING: str = ''
-    STRIPE_BASIC_TIER_ID_PROD: str = 'price_1RSXwBR7wSQ1yLTed8IJ4m4z'
-    STRIPE_BASIC_TIER_ID_STAGING: str = 'price_1RTP85R7wSQ1yLTeRKDCD1PC'
+    STRIPE_SPARK_TIER_ID_PROD: str = 'price_1RbMFsJ07oA1wY5pn9qujLZK'
+    STRIPE_SPARK_TIER_ID_STAGING: str = 'price_1RbMFsJ07oA1wY5pn9qujLZK'
+    STRIPE_BOOST_TIER_ID_PROD: str = 'price_1RbMG3J07oA1wY5p3HpVIPyq'
+    STRIPE_BOOST_TIER_ID_STAGING: str = 'price_1RbMG3J07oA1wY5p3HpVIPyq'
+    STRIPE_ASCEND_TIER_ID_PROD: str = 'price_1RbMG9J07oA1wY5pfLic42hS'
+    STRIPE_ASCEND_TIER_ID_STAGING: str = 'price_1RbMG9J07oA1wY5pfLic42hS'
+    STRIPE_PRO_TIER_ID_PROD: str = 'price_1RbMGLJ07oA1wY5pHEGapf1X'
+    STRIPE_PRO_TIER_ID_STAGING: str = 'price_1RbMGLJ07oA1wY5pHEGapf1X'
+    STRIPE_ELITE_TIER_ID_PROD: str = 'price_1RbMGRJ07oA1wY5pECiIJMck'
+    STRIPE_ELITE_TIER_ID_STAGING: str = 'price_1RbMGRJ07oA1wY5pECiIJMck'
+    STRIPE_ULTIMATE_TIER_ID_PROD: str = 'price_1RbMGXJ07oA1wY5pWyyWRie1'
+    STRIPE_ULTIMATE_TIER_ID_STAGING: str = 'price_1RbMGXJ07oA1wY5pWyyWRie1'
+    STRIPE_ENTERPRISE_TIER_ID_PROD: str = 'price_1RbMGcJ07oA1wY5pVy0yBgnl'
+    STRIPE_ENTERPRISE_TIER_ID_STAGING: str = 'price_1RbMGcJ07oA1wY5pVy0yBgnl'
     
     # Sandbox configuration
     SANDBOX_IMAGE_NAME = "kortix/suna:0.1.3"
@@ -117,16 +127,59 @@ class Configuration:
     
     # Price IDs for subscription tiers based on environment
     @property
-    def STRIPE_FREE_TIER_ID(self) -> str:
+    def STRIPE_SPARK_TIER_ID(self) -> str:
         if self.ENV_MODE == EnvMode.STAGING:
-            return self.STRIPE_FREE_TIER_ID_STAGING
-        return self.STRIPE_FREE_TIER_ID_PROD
-    
+            return self.STRIPE_SPARK_TIER_ID_STAGING
+        return self.STRIPE_SPARK_TIER_ID_PROD
+
     @property
-    def STRIPE_BASIC_TIER_ID(self) -> str:
+    def STRIPE_BOOST_TIER_ID(self) -> str:
         if self.ENV_MODE == EnvMode.STAGING:
-            return self.STRIPE_BASIC_TIER_ID_STAGING
-        return self.STRIPE_BASIC_TIER_ID_PROD
+            return self.STRIPE_BOOST_TIER_ID_STAGING
+        return self.STRIPE_BOOST_TIER_ID_PROD
+
+    @property
+    def STRIPE_ASCEND_TIER_ID(self) -> str:
+        if self.ENV_MODE == EnvMode.STAGING:
+            return self.STRIPE_ASCEND_TIER_ID_STAGING
+        return self.STRIPE_ASCEND_TIER_ID_PROD
+
+    @property
+    def STRIPE_PRO_TIER_ID(self) -> str:
+        if self.ENV_MODE == EnvMode.STAGING:
+            return self.STRIPE_PRO_TIER_ID_STAGING
+        return self.STRIPE_PRO_TIER_ID_PROD
+
+    @property
+    def STRIPE_ELITE_TIER_ID(self) -> str:
+        if self.ENV_MODE == EnvMode.STAGING:
+            return self.STRIPE_ELITE_TIER_ID_STAGING
+        return self.STRIPE_ELITE_TIER_ID_PROD
+
+    @property
+    def STRIPE_ULTIMATE_TIER_ID(self) -> str:
+        if self.ENV_MODE == EnvMode.STAGING:
+            return self.STRIPE_ULTIMATE_TIER_ID_STAGING
+        return self.STRIPE_ULTIMATE_TIER_ID_PROD
+
+    @property
+    def STRIPE_ENTERPRISE_TIER_ID(self) -> str:
+        if self.ENV_MODE == EnvMode.STAGING:
+            return self.STRIPE_ENTERPRISE_TIER_ID_STAGING
+        return self.STRIPE_ENTERPRISE_TIER_ID_PROD
+
+    @property
+    def SUBSCRIPTION_USAGE_LIMITS(self) -> Dict[str, int]:
+        """Return a dictionary mapping tier IDs to usage limits in minutes."""
+        return {
+            self.STRIPE_SPARK_TIER_ID: 120,
+            self.STRIPE_BOOST_TIER_ID: 360,
+            self.STRIPE_ASCEND_TIER_ID: 720,
+            self.STRIPE_PRO_TIER_ID: 1500,
+            self.STRIPE_ELITE_TIER_ID: 3000,
+            self.STRIPE_ULTIMATE_TIER_ID: 7500,
+            self.STRIPE_ENTERPRISE_TIER_ID: 12000,
+        }
     
     def __init__(self):
         """Initialize configuration by loading from environment variables."""

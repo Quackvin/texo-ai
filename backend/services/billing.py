@@ -112,10 +112,7 @@ async def get_user_subscription(user_id: str) -> Optional[Dict]:
             # Get the first subscription item
             if sub.get('items') and sub['items'].get('data') and len(sub['items']['data']) > 0:
                 item = sub['items']['data'][0]
-                if item.get('price') and item['price'].get('id') in [
-                    config.STRIPE_FREE_TIER_ID,
-                    config.STRIPE_BASIC_TIER_ID
-                ]:
+                if item.get('price') and item['price'].get('id') in config.SUBSCRIPTION_USAGE_LIMITS:
                     our_subscriptions.append(sub)
         logger.info(f"[billing.get_user_subscription()] Filtered subscriptions: {len(our_subscriptions)}")
         
@@ -203,22 +200,21 @@ async def get_allowed_models_for_user(client, user_id: str):
     """
 
     subscription = await get_user_subscription(user_id)
-    tier_name = 'free'
+    tier_name = None
     
     if subscription:
         price_id = None
         if subscription.get('items') and subscription['items'].get('data') and len(subscription['items']['data']) > 0:
             price_id = subscription['items']['data'][0]['price']['id']
-        else:
-            price_id = subscription.get('price_id', config.STRIPE_FREE_TIER_ID)
         
-        # Get tier info for this price_id
-        tier_info = SUBSCRIPTION_TIERS.get(price_id)
-        if tier_info:
-            tier_name = tier_info['name']
+        if price_id:
+            # Get tier info for this price_id
+            tier_info = SUBSCRIPTION_TIERS.get(price_id)
+            if tier_info:
+                tier_name = tier_info['name']
     
     # Return allowed models for this tier
-    return MODEL_ACCESS_TIERS.get(tier_name, MODEL_ACCESS_TIERS['free'])  # Default to free tier if unknown
+    return MODEL_ACCESS_TIERS.get(tier_name, [])
 
 
 async def can_use_model(client, user_id: str, model_name: str):
@@ -257,32 +253,30 @@ async def check_billing_status(client, user_id: str) -> Tuple[bool, str, Optiona
     subscription = await get_user_subscription(user_id)
     # print("Current subscription:", subscription)
     
-    # If no subscription, they can use free tier
+    # If no subscription, they have no access
     if not subscription:
-        subscription = {
-            'price_id': config.STRIPE_FREE_TIER_ID,  # Free tier
-            'plan_name': 'free'
-        }
-    
+        return False, "You do not have an active subscription. Please subscribe to a plan to continue.", None
+
     # Extract price ID from subscription items
     price_id = None
-    if subscription.get('items') and subscription['items'].get('data') and len(subscription['items']['data']) > 0:
+    if subscription.get('items') and subscription['items'].get('data'):
         price_id = subscription['items']['data'][0]['price']['id']
-    else:
-        price_id = subscription.get('price_id', config.STRIPE_FREE_TIER_ID)
-    
-    # Get tier info - default to free tier if not found
-    tier_info = SUBSCRIPTION_TIERS.get(price_id)
-    if not tier_info:
-        logger.warning(f"Unknown subscription tier: {price_id}, defaulting to free tier")
-        tier_info = SUBSCRIPTION_TIERS[config.STRIPE_FREE_TIER_ID]
-    
+
+    if not price_id:
+        return False, "Could not determine your subscription plan. Please contact support.", None
+
+    # Get usage limit for the tier
+    usage_limit = config.SUBSCRIPTION_USAGE_LIMITS.get(price_id)
+    if usage_limit is None:
+        logger.warning(f"Unknown subscription tier: {price_id}")
+        return False, "Your subscription plan is not recognized. Please contact support.", None
+
     # Calculate current month's usage
     current_usage = await calculate_monthly_usage(client, user_id)
-    
+
     # Check if within limits
-    if current_usage >= tier_info['minutes']:
-        return False, f"Monthly limit of {tier_info['minutes']} minutes reached. Please upgrade your plan or wait until next month.", subscription
+    if current_usage >= usage_limit:
+        return False, f"Monthly limit of {usage_limit} minutes reached. Please upgrade your plan or wait until next month.", subscription
     
     return True, "OK", subscription
 
@@ -692,15 +686,8 @@ async def get_subscription(
         logger.info(f"[billing.get_subscription()] User ID: {current_user_id} - Subscription ID: {subscription['id'] if subscription else 'No Subscription'}")
         
         if not subscription:
-            # Default to free tier status if no active subscription for our product
-            free_tier_id = config.STRIPE_FREE_TIER_ID
-            free_tier_info = SUBSCRIPTION_TIERS.get(free_tier_id)
-            return SubscriptionStatus(
-                status="no_subscription",
-                plan_name=free_tier_info.get('name', 'free') if free_tier_info else 'free',
-                price_id=free_tier_id,
-                minutes_limit=free_tier_info.get('minutes') if free_tier_info else 0
-            )
+            # If no subscription, the user has no plan
+            return SubscriptionStatus(status="no_subscription")
         
         # Extract current plan details
         current_item = subscription['items']['data'][0]
@@ -723,7 +710,7 @@ async def get_subscription(
             current_period_end=datetime.fromtimestamp(current_item['current_period_end'], tz=timezone.utc),
             cancel_at_period_end=subscription['cancel_at_period_end'],
             trial_end=datetime.fromtimestamp(subscription['trial_end'], tz=timezone.utc) if subscription.get('trial_end') else None,
-            minutes_limit=current_tier_info['minutes'],
+            minutes_limit=config.SUBSCRIPTION_USAGE_LIMITS.get(current_price_id, 0),
             current_usage=round(current_usage, 2),
             has_schedule=False # Default
         )
