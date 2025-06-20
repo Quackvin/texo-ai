@@ -111,7 +111,7 @@ export default function AccountBillingStatus({ accountId, returnUrl }: Props) {
 
   const isPlan = (planName?: string) => {
     if (!planName) return false;
-    return subscriptionData?.plan_name.toLowerCase().includes(planName.toLowerCase());
+    return subscriptionData?.plan_name === planName;
   };
 
   const planName = (() => {

@@ -92,7 +92,7 @@ class Configuration:
 
     # Stripe Product IDs
     STRIPE_PRODUCT_ID_PROD: str = 'prod_SWP4HMjRj8aksM'
-    STRIPE_PRODUCT_ID_STAGING: str = 'prod_SNIXohjQMbh8qv'
+    STRIPE_PRODUCT_ID_STAGING: str = 'prod_SWP4HMjRj8aksM'
 
     # Subscription tier IDs
     STRIPE_SPARK_TIER_ID_PROD: str = 'price_1RbMFsJ07oA1wY5pn9qujLZK'
