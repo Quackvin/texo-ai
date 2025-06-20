@@ -8,26 +8,32 @@ from utils.config import config
 
 # Get subscription tiers IDs from config and apply limits
 SUBSCRIPTION_TIERS = {
-    config.STRIPE_FREE_TIER_ID: {'name': 'free', 'minutes': 0},
-    config.STRIPE_BASIC_TIER_ID: {'name': 'basic', 'minutes': 9999999}
+    config.STRIPE_SPARK_TIER_ID: {'name': 'Spark', 'minutes': 120},
+    config.STRIPE_BOOST_TIER_ID: {'name': 'Boost', 'minutes': 360},
+    config.STRIPE_ASCEND_TIER_ID: {'name': 'Ascend', 'minutes': 720},
+    config.STRIPE_PRO_TIER_ID: {'name': 'Pro', 'minutes': 1500},
+    config.STRIPE_ELITE_TIER_ID: {'name': 'Elite', 'minutes': 3000},
+    config.STRIPE_ULTIMATE_TIER_ID: {'name': 'Ultimate', 'minutes': 7500},
+    config.STRIPE_ENTERPRISE_TIER_ID: {'name': 'Enterprise', 'minutes': 12000},
 }
 
+ALL_MODELS = [
+    "openrouter/deepseek/deepseek-chat",
+    "openai/gpt-4o",
+    "openrouter/google/gemini-2.5-flash-preview-05-20",
+    "anthropic/claude-3-7-sonnet-latest",
+    "anthropic/claude-sonnet-4-20250514",
+    "openrouter/qwen/qwen3-235b-a22b",
+]
+
 MODEL_ACCESS_TIERS = {
-    "basic": [
-        "openrouter/deepseek/deepseek-chat",
-        # "xai/grok-3-mini-fast-beta",
-        "openai/gpt-4o",
-        # "openai/gpt-4-turbo",
-        # "xai/grok-3-fast-latest",
-        "openrouter/google/gemini-2.5-flash-preview-05-20",  # Added
-        # "openai/gpt-4",
-        "anthropic/claude-3-7-sonnet-latest",
-        "anthropic/claude-sonnet-4-20250514",
-        # "openai/gpt-4.1-2025-04-14",
-        # "openrouter/deepseek/deepseek-r1",
-        "openrouter/qwen/qwen3-235b-a22b",
-    ],
-    "free": []
+    "Spark": ALL_MODELS,
+    "Boost": ALL_MODELS,
+    "Ascend": ALL_MODELS,
+    "Pro": ALL_MODELS,
+    "Elite": ALL_MODELS,
+    "Ultimate": ALL_MODELS,
+    "Enterprise": ALL_MODELS,
 }
 
 MODEL_NAME_ALIASES = {
@@ -56,4 +62,3 @@ MODEL_NAME_ALIASES = {
     "google/gemini-2.5-pro-preview":"openrouter/google/gemini-2.5-pro-preview",
     "deepseek/deepseek-chat-v3-0324":"openrouter/deepseek/deepseek-chat-v3-0324",
 }
-
