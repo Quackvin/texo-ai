@@ -21,7 +21,7 @@ from agentpress.thread_manager import ThreadManager
 from services.supabase import DBConnection
 from services import redis
 from utils.auth_utils import get_current_user_id_from_jwt, get_user_id_from_stream_auth, verify_thread_access
-from utils.logger import logger
+from utils.logger import logger, structlog
 from services.billing import check_billing_status, can_use_model
 from utils.config import config
 from sandbox.sandbox import create_sandbox, delete_sandbox, get_or_start_sandbox
@@ -353,6 +353,9 @@ async def start_agent(
     user_id: str = Depends(get_current_user_id_from_jwt)
 ):
     """Start an agent for a specific thread in the background."""
+    structlog.contextvars.bind_contextvars(
+        thread_id=thread_id,
+    )
     global instance_id # Ensure instance_id is accessible
     if not instance_id:
         raise HTTPException(status_code=500, detail="Agent API not initialized with instance ID")
@@ -384,6 +387,13 @@ async def start_agent(
     account_id = thread_data.get('account_id')
     thread_agent_id = thread_data.get('agent_id')
     thread_metadata = thread_data.get('metadata', {})
+
+    structlog.contextvars.bind_contextvars(
+        project_id=project_id,
+        account_id=account_id,
+        thread_agent_id=thread_agent_id,
+        thread_metadata=thread_metadata,
+    )
     
     # Check if this is an agent builder thread
     is_agent_builder = thread_metadata.get('is_agent_builder', False)
@@ -461,6 +471,9 @@ async def start_agent(
         "started_at": datetime.now(timezone.utc).isoformat()
     }).execute()
     agent_run_id = agent_run.data[0]['id']
+    structlog.contextvars.bind_contextvars(
+        agent_run_id=agent_run_id,
+    )
     logger.info(f"Created new agent run: {agent_run_id}")
 
     # Register this run in Redis with TTL using instance ID
@@ -469,6 +482,8 @@ async def start_agent(
         await redis.set(instance_key, "running", ex=redis.REDIS_KEY_TTL)
     except Exception as e:
         logger.warning(f"Failed to register agent run in Redis ({instance_key}): {str(e)}")
+
+    request_id = structlog.contextvars.get_contextvars().get('request_id')
 
     # Run the agent in the background
     run_agent_background.send(
@@ -479,7 +494,8 @@ async def start_agent(
         stream=body.stream, enable_context_manager=body.enable_context_manager,
         agent_config=agent_config,  # Pass agent configuration
         is_agent_builder=is_agent_builder,
-        target_agent_id=target_agent_id
+        target_agent_id=target_agent_id,
+        request_id=request_id,
     )
 
     return {"agent_run_id": agent_run_id, "status": "running"}
@@ -487,6 +503,9 @@ async def start_agent(
 @router.post("/agent-run/{agent_run_id}/stop")
 async def stop_agent(agent_run_id: str, user_id: str = Depends(get_current_user_id_from_jwt)):
     """Stop a running agent."""
+    structlog.contextvars.bind_contextvars(
+        agent_run_id=agent_run_id,
+    )
     logger.info(f"Received request to stop agent run: {agent_run_id}")
     client = await db.client
     await get_agent_run_with_access_check(client, agent_run_id, user_id)
@@ -496,6 +515,9 @@ async def stop_agent(agent_run_id: str, user_id: str = Depends(get_current_user_
 @router.get("/thread/{thread_id}/agent-runs")
 async def get_agent_runs(thread_id: str, user_id: str = Depends(get_current_user_id_from_jwt)):
     """Get all agent runs for a thread."""
+    structlog.contextvars.bind_contextvars(
+        thread_id=thread_id,
+    )
     logger.info(f"Fetching agent runs for thread: {thread_id}")
     client = await db.client
     await verify_thread_access(client, thread_id, user_id)
@@ -506,6 +528,9 @@ async def get_agent_runs(thread_id: str, user_id: str = Depends(get_current_user
 @router.get("/agent-run/{agent_run_id}")
 async def get_agent_run(agent_run_id: str, user_id: str = Depends(get_current_user_id_from_jwt)):
     """Get agent run status and responses."""
+    structlog.contextvars.bind_contextvars(
+        agent_run_id=agent_run_id,
+    )
     logger.info(f"Fetching agent run details: {agent_run_id}")
     client = await db.client
     agent_run_data = await get_agent_run_with_access_check(client, agent_run_id, user_id)
@@ -522,6 +547,9 @@ async def get_agent_run(agent_run_id: str, user_id: str = Depends(get_current_us
 @router.get("/thread/{thread_id}/agent", response_model=ThreadAgentResponse)
 async def get_thread_agent(thread_id: str, user_id: str = Depends(get_current_user_id_from_jwt)):
     """Get the agent details for a specific thread."""
+    structlog.contextvars.bind_contextvars(
+        thread_id=thread_id,
+    )
     logger.info(f"Fetching agent details for thread: {thread_id}")
     client = await db.client
     
@@ -611,6 +639,11 @@ async def stream_agent_run(
     user_id = await get_user_id_from_stream_auth(request, token)
     agent_run_data = await get_agent_run_with_access_check(client, agent_run_id, user_id)
 
+    structlog.contextvars.bind_contextvars(
+        agent_run_id=agent_run_id,
+        user_id=user_id,
+    )
+
     response_list_key = f"agent_run:{agent_run_id}:responses"
     response_channel = f"agent_run:{agent_run_id}:new_response"
     control_channel = f"agent_run:{agent_run_id}:control" # Global control channel
@@ -637,13 +670,17 @@ async def stream_agent_run(
             initial_yield_complete = True
 
             # 2. Check run status *after* yielding initial data
-            run_status = await client.table('agent_runs').select('status').eq("id", agent_run_id).maybe_single().execute()
+            run_status = await client.table('agent_runs').select('status', 'thread_id').eq("id", agent_run_id).maybe_single().execute()
             current_status = run_status.data.get('status') if run_status.data else None
 
             if current_status != 'running':
                 logger.info(f"Agent run {agent_run_id} is not running (status: {current_status}). Ending stream.")
                 yield f"data: {json.dumps({'type': 'status', 'status': 'completed'})}\n\n"
                 return
+          
+            structlog.contextvars.bind_contextvars(
+                thread_id=run_status.data.get('thread_id'),
+            )
 
             # 3. Set up Pub/Sub listeners for new responses and control signals
             pubsub_response = await redis.create_pubsub()
@@ -945,11 +982,20 @@ async def initiate_agent_with_files(
             "account_id": account_id,
             "created_at": datetime.now(timezone.utc).isoformat()
         }
+
+        structlog.contextvars.bind_contextvars(
+            thread_id=thread_data["thread_id"],
+            project_id=project_id,
+            account_id=account_id,
+        )
         
         # Store the agent_id in the thread if we have one
         if agent_config:
             thread_data["agent_id"] = agent_config['agent_id']
             logger.info(f"Storing agent_id {agent_config['agent_id']} in thread")
+            structlog.contextvars.bind_contextvars(
+                agent_id=agent_config['agent_id'],
+            )
         
         # Store agent builder metadata if this is an agent builder session
         if is_agent_builder:
@@ -958,6 +1004,9 @@ async def initiate_agent_with_files(
                 "target_agent_id": target_agent_id
             }
             logger.info(f"Storing agent builder metadata in thread: target_agent_id={target_agent_id}")
+            structlog.contextvars.bind_contextvars(
+                target_agent_id=target_agent_id,
+            )
         
         thread = await client.table('threads').insert(thread_data).execute()
         thread_id = thread.data[0]['thread_id']
@@ -983,9 +1032,9 @@ async def initiate_agent_with_files(
                             if hasattr(sandbox, 'fs') and hasattr(sandbox.fs, 'upload_file'):
                                 import inspect
                                 if inspect.iscoroutinefunction(sandbox.fs.upload_file):
-                                    await sandbox.fs.upload_file(target_path, content)
+                                    await sandbox.fs.upload_file(content, target_path)
                                 else:
-                                    sandbox.fs.upload_file(target_path, content)
+                                    sandbox.fs.upload_file(content, target_path)
                                 logger.debug(f"Called sandbox.fs.upload_file for {target_path}")
                                 upload_successful = True
                             else:
@@ -1039,6 +1088,9 @@ async def initiate_agent_with_files(
         }).execute()
         agent_run_id = agent_run.data[0]['id']
         logger.info(f"Created new agent run: {agent_run_id}")
+        structlog.contextvars.bind_contextvars(
+            agent_run_id=agent_run_id,
+        )
 
         # Register run in Redis
         instance_key = f"active_run:{instance_id}:{agent_run_id}"
@@ -1046,6 +1098,8 @@ async def initiate_agent_with_files(
             await redis.set(instance_key, "running", ex=redis.REDIS_KEY_TTL)
         except Exception as e:
             logger.warning(f"Failed to register agent run in Redis ({instance_key}): {str(e)}")
+
+        request_id = structlog.contextvars.get_contextvars().get('request_id')
 
         # Run agent in background
         run_agent_background.send(
@@ -1056,7 +1110,8 @@ async def initiate_agent_with_files(
             stream=stream, enable_context_manager=enable_context_manager,
             agent_config=agent_config,  # Pass agent configuration
             is_agent_builder=is_agent_builder,
-            target_agent_id=target_agent_id
+            target_agent_id=target_agent_id,
+            request_id=request_id,
         )
 
         return {"thread_id": thread_id, "agent_run_id": agent_run_id}
