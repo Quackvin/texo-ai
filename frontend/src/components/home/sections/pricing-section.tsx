@@ -693,7 +693,7 @@ export function PricingSection({
               Choose the right plan for your needs
             </h2>
             <p className="text-muted-foreground text-center text-balance font-medium">
-              Upgrade to a premium plan for more usage hours
+              Sign up for a premium plan to get started with Texo
             </p>
           </SectionHeader>
           <div className="relative w-full h-full">
