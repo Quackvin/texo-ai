@@ -51,9 +51,9 @@ export interface PricingTier {
 export const siteConfig = {
   name: 'Texo AI',
   description: 'The Generalist AI Agent that can act on your behalf.',
-  cta: 'Start Free',
+  cta: 'Get Started',
   url: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-  keywords: ['AI Agent', 'Generalist AI', 'Open Source AI', 'Autonomous Agent'],
+  keywords: ['AI Agent', 'Generalist AI', 'Small Business AI', 'Autonomous Agent'],
   links: {
     email: 'support@texoai.com.au',
     twitter: 'https://x.com/texoai',
@@ -65,7 +65,7 @@ export const siteConfig = {
     links: [
       { id: 1, name: 'Home', href: '#hero' },
       { id: 2, name: 'Use Cases', href: '#use-cases' },
-      { id: 3, name: 'Open Source', href: '#open-source' },
+      { id: 3, name: 'Features', href: '#features' },
       { id: 4, name: 'Pricing', href: '#pricing' },
     ],
   },
@@ -96,7 +96,7 @@ export const siteConfig = {
         />
       </svg>
     ),
-    badge: '100% OPEN SOURCE',
+    badge: 'For Small Businesses',
     githubUrl: 'https://github.com/kortix-ai/suna',
     title: 'Texo, the AI Employee.',
     description:
@@ -498,7 +498,7 @@ export const siteConfig = {
         content: <FourthBentoAnimation once={false} />,
         title: 'Complete Customization',
         description:
-          'Tailor Texo to your specific needs. As an open source solution, you have full control over its capabilities, integrations, and implementation.',
+          'Tailor Texo to your specific needs. You have full control over its capabilities, integrations, and implementation to grow your business.',
       },
     ],
   },
@@ -520,14 +520,14 @@ export const siteConfig = {
     },
     {
       id: 4,
-      text: 'Access cutting-edge AI as an open source, transparent solution.',
+      text: 'Access cutting-edge AI to power your business growth.',
       image: '/Device-1.png',
     },
   ],
   growthSection: {
-    title: 'Open Source & Secure',
+    title: 'Powerful & Secure',
     description:
-      'Where advanced security meets complete transparency—designed to protect your data while providing full access to the code.',
+      'Where advanced security meets powerful AI—designed to protect your data and grow your business.',
     items: [
       {
         id: 1,
@@ -807,9 +807,9 @@ export const siteConfig = {
           </div>
         ),
 
-        title: 'Open Source Security',
+        title: 'Enterprise-Grade Security',
         description:
-          'Benefit from the security of open source code that thousands of eyes can review, audit, and improve.',
+          'Benefit from the security of enterprise-grade infrastructure that thousands of eyes can review, audit, and improve.',
       },
       {
         id: 2,
@@ -827,7 +827,7 @@ export const siteConfig = {
   },
   quoteSection: {
     quote:
-      'Texo AI has transformed how we approach everyday tasks. The level of automation it provides, combined with its open source nature, makes it an invaluable tool for our entire organization.',
+      'Texo AI has transformed how we approach everyday tasks. The level of automation it provides makes it an invaluable tool for our entire organization.',
     author: {
       name: 'Alex Johnson',
       role: 'CTO, Innovatech',
@@ -835,48 +835,10 @@ export const siteConfig = {
     },
   },
   pricing: {
-    title: 'Open Source & Free Forever',
+    title: 'Simple Pricing',
     description:
-      'Texo AI is 100% open source and free to use. No hidden fees, no premium features locked behind paywalls.',
+      'No hidden fees, no premium features locked behind paywalls. Just simple, transparent pricing.',
     pricingItems: [
-      {
-        name: 'Community',
-        href: '#',
-        price: 'Free',
-        period: 'forever',
-        yearlyPrice: 'Free',
-        features: [
-          'Full agent capabilities',
-          'Unlimited usage',
-          'Full source code access',
-          'Community support',
-        ],
-        description: 'Perfect for individual users and developers',
-        buttonText: 'Hire Texo',
-        buttonColor: 'bg-accent text-primary',
-        isPopular: false,
-      },
-      {
-        name: 'Self-Hosted',
-        href: '#',
-        price: 'Free',
-        period: 'forever',
-        yearlyPrice: 'Free',
-        features: [
-          'Full agent capabilities',
-          'Unlimited usage',
-          'Full source code access',
-          'Custom deployment',
-          'Local data storage',
-          'Integration with your tools',
-          'Full customization',
-          'Community support',
-        ],
-        description: 'Ideal for organizations with specific requirements',
-        buttonText: 'View Docs',
-        buttonColor: 'bg-secondary text-white',
-        isPopular: true,
-      },
       {
         name: 'Enterprise',
         href: '#',
@@ -1117,12 +1079,6 @@ export const siteConfig = {
           'Texo AI works by analyzing your requirements, leveraging advanced AI algorithms to understand context, and executing tasks based on your instructions. It can integrate with your workflow, learn from feedback, and continuously improve its performance.',
       },
       {
-        id: 3,
-        question: 'Is Texo AI really free?',
-        answer:
-          'Yes, Texo AI is completely free and open source. We believe in democratizing AI technology and making it accessible to everyone. You can use it, modify it, and contribute to its development without any cost.',
-      },
-      {
         id: 4,
         question: 'Can I integrate Texo with my existing tools?',
         answer:
@@ -1147,7 +1103,7 @@ export const siteConfig = {
     title: 'Start Using Texo AI Today',
     backgroundImage: '/holo.png',
     button: {
-      text: 'Get Started for free',
+      text: 'Get Started',
       href: '/auth',
     },
     subtext: 'The generalist AI Agent that acts on your behalf',

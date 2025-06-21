@@ -28,7 +28,6 @@ import { isLocalMode } from '@/lib/config';
 // Constants
 const DEFAULT_SELECTED_PLAN = '6 hours';
 export const SUBSCRIPTION_PLANS = {
-  FREE: 'free',
   PRO: 'base',
   ENTERPRISE: 'extra',
 };
@@ -694,8 +693,7 @@ export function PricingSection({
               Choose the right plan for your needs
             </h2>
             <p className="text-muted-foreground text-center text-balance font-medium">
-              Start with our free plan or upgrade to a premium plan for more
-              usage hours
+              Upgrade to a premium plan for more usage hours
             </p>
           </SectionHeader>
           <div className="relative w-full h-full">

@@ -25,7 +25,7 @@ import { SubscriptionStatus } from '@/components/thread/chat-input/_use-model-se
 
 import { UnifiedMessage, ApiMessageType, ToolCallInput, Project } from '../_types';
 import { useThreadData, useToolCalls, useBilling, useKeyboardShortcuts } from '../_hooks';
-import { ThreadError, UpgradeDialog, ThreadLayout } from '../_components';
+import { ThreadError, ThreadLayout } from '../_components';
 import { useVncPreloader } from '@/hooks/useVncPreloader';
 import { useAgent } from '@/hooks/react-query/agents/use-agents';
 
@@ -48,7 +48,6 @@ export default function ThreadPage({
   const [fileViewerOpen, setFileViewerOpen] = useState(false);
   const [fileToView, setFileToView] = useState<string | null>(null);
   const [filePathList, setFilePathList] = useState<string[] | undefined>(undefined);
-  const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
   const [debugMode, setDebugMode] = useState(false);
   const [initialPanelOpenAttempted, setInitialPanelOpenAttempted] = useState(false);
 
@@ -496,20 +495,6 @@ export default function ThreadPage({
     setDebugMode(debugParam === 'true');
   }, [searchParams]);
 
-  useEffect(() => {
-    if (initialLoadCompleted && subscriptionData) {
-      const hasSeenUpgradeDialog = localStorage.getItem('suna_upgrade_dialog_displayed');
-      const isFreeTier = subscriptionStatus === 'no_subscription';
-      if (!hasSeenUpgradeDialog && isFreeTier && !isLocalMode()) {
-        setShowUpgradeDialog(true);
-      }
-    }
-  }, [subscriptionData, subscriptionStatus, initialLoadCompleted]);
-
-  const handleDismissUpgradeDialog = () => {
-    setShowUpgradeDialog(false);
-    localStorage.setItem('suna_upgrade_dialog_displayed', 'true');
-  };
 
   useEffect(() => {
     if (streamingToolCall) {
@@ -647,11 +632,6 @@ export default function ThreadPage({
         </div>
       </ThreadLayout>
 
-      <UpgradeDialog
-        open={showUpgradeDialog}
-        onOpenChange={setShowUpgradeDialog}
-        onDismiss={handleDismissUpgradeDialog}
-      />
     </>
   );
 } 

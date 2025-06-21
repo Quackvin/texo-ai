@@ -9,9 +9,6 @@ import { VoiceRecorder } from './voice-recorder';
 import { ModelSelector } from './model-selector';
 import { SubscriptionStatus } from './_use-model-selection';
 import { isLocalMode } from '@/lib/config';
-import { TooltipContent } from '@/components/ui/tooltip';
-import { Tooltip } from '@/components/ui/tooltip';
-import { TooltipProvider, TooltipTrigger } from '@radix-ui/react-tooltip';
 
 interface MessageInputProps {
   value: string;
@@ -152,19 +149,6 @@ export const MessageInput = forwardRef<HTMLTextAreaElement, MessageInputProps>(
               disabled={loading || (disabled && !isAgentRunning)}
             />
           </div>
-          {subscriptionStatus === 'no_subscription' && !isLocalMode() &&
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <p className='text-sm text-amber-500 hidden sm:block'>Upgrade for full performance</p>
-
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>The free tier is severely limited by inferior models; upgrade to experience the true full Texo experience.</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          }
           <div className='flex items-center gap-2'>
             <ModelSelector
               selectedModel={selectedModel}
@@ -203,13 +187,6 @@ export const MessageInput = forwardRef<HTMLTextAreaElement, MessageInputProps>(
             </Button>
           </div>
         </div>
-        {subscriptionStatus === 'no_subscription' && !isLocalMode() &&
-          <div className='sm:hidden absolute -bottom-8 left-0 right-0 flex justify-center'>
-            <p className='text-xs text-amber-500 px-2 py-1'>
-              Upgrade for better performance
-            </p>
-          </div>
-        }
       </div>
     );
   },

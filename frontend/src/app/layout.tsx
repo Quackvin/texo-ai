@@ -30,8 +30,7 @@ export const metadata: Metadata = {
     default: siteConfig.name,
     template: `%s - ${siteConfig.name}`,
   },
-  description:
-    'Texo AI is a fully open source AI assistant that helps you accomplish real-world tasks with ease. Through natural conversation, Texo AI becomes your digital companion for research, data analysis, and everyday challenges.',
+  description: 'Texo AI: Your small business growth engine.',
   keywords: [
     'AI',
     'artificial intelligence',
@@ -39,7 +38,8 @@ export const metadata: Metadata = {
     'web scraping',
     'file management',
     'AI assistant',
-    'open source',
+    'small business',
+    'growth engine',
     'research',
     'data analysis',
   ],
@@ -64,9 +64,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: 'Texo AI - Open Source Generalist AI Agent',
-    description:
-      'Texo AI is a fully open source AI assistant that helps you accomplish real-world tasks with ease through natural conversation.',
+    title: 'Texo AI: Your small business growth engine.',
+    description: 'Texo AI: Your small business growth engine.',
     url: siteConfig.url,
     siteName: 'Texo AI',
     images: [
@@ -74,7 +73,7 @@ export const metadata: Metadata = {
         url: '/banner.png',
         width: 1200,
         height: 630,
-        alt: 'Texo AI - Open Source Generalist AI Agent',
+        alt: 'Texo AI: Your small business growth engine.',
         type: 'image/png',
       },
     ],
@@ -83,9 +82,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Texo AI - Open Source Generalist AI Agent',
-    description:
-      'Texo AI is a fully open source AI assistant that helps you accomplish real-world tasks with ease through natural conversation.',
+    title: 'Texo AI: Your small business growth engine.',
+    description: 'Texo AI: Your small business growth engine.',
     creator: '@texoai',
     site: '@texoai',
     images: [
@@ -93,7 +91,7 @@ export const metadata: Metadata = {
         url: '/banner.png',
         width: 1200,
         height: 630,
-        alt: 'Texo AI - Open Source Generalist AI Agent',
+        alt: 'Texo AI: Your small business growth engine.',
       },
     ],
   },
