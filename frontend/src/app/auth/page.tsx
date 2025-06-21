@@ -277,7 +277,7 @@ function LoginContent() {
 
                   <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
                     <Link
-                      href="/"
+                      href="https://texoai.com.au/"
                       className="flex h-12 items-center justify-center w-full text-center rounded-full border border-border bg-background hover:bg-accent/20 transition-all"
                     >
                       Return to home
@@ -356,7 +356,7 @@ function LoginContent() {
             {/* Header content */}
             <div className="relative z-10 pt-24 pb-8 max-w-md mx-auto h-full w-full flex flex-col gap-2 items-center justify-center">
               <Link
-                href="/"
+                href="https://texoai.com.au/"
                 className="group border border-border/50 bg-background hover:bg-accent/20 rounded-full text-sm h-8 px-3 flex items-center gap-2 transition-all duration-200 shadow-sm mb-6"
               >
                 <ArrowLeft className="h-4 w-4 text-muted-foreground" />
