@@ -17,11 +17,12 @@ SUBSCRIPTION_TIERS = {
     config.STRIPE_ENTERPRISE_TIER_ID: {'name': 'Enterprise', 'minutes': 12000},
 }
 
+# THIS DETERMINES IS THE USER WILL GET THE FORBIDDEN ERROR MESSAGE
 ALL_MODELS = [
     "openrouter/deepseek/deepseek-chat",
     "openai/gpt-4o",
     "openrouter/google/gemini-2.5-flash-preview-05-20",
-    "anthropic/claude-3-7-sonnet-latest",
+    "bedrock/claude-3-7-sonnet-latest",
     "anthropic/claude-sonnet-4-20250514",
     "openrouter/qwen/qwen3-235b-a22b",
 ]
@@ -35,10 +36,10 @@ MODEL_ACCESS_TIERS = {
     "Ultimate": ALL_MODELS,
     "Enterprise": ALL_MODELS,
 }
-
+# THIS IS WHAT IS SHOWN IN THE FRONT END DROPDOWN
 MODEL_NAME_ALIASES = {
     # Short names to full names
-    "sonnet-3.7": "anthropic/claude-3-7-sonnet-latest",
+    "sonnet-3.7": "bedrock/claude-3-7-sonnet-latest",
     "sonnet-3.5": "anthropic/claude-3-5-sonnet-latest",
     "haiku-3.5": "anthropic/claude-3-5-haiku-latest",
     "claude-sonnet-4": "anthropic/claude-sonnet-4-20250514",

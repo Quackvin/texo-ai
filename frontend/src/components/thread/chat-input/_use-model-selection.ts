@@ -27,7 +27,9 @@ export interface CustomModel {
   label: string;
 }
 
-// SINGLE SOURCE OF TRUTH for all model data
+// USED TO ORDER MODELS IN THE DROPDOWN AND APPLY THE LOW QUALITY MODEL TOOLTIP
+// MODELS LISTED WILL ONLY BE SHOWN IF DEFINED IN THE BACKEND IN MODEL_NAME_ALIASES
+// MODELS IN MODEL_NAME_ALIASES WILL STILL SHOWN EVEN IF NOT IN THIS LIST
 export const MODELS = {
   // Premium high-priority models
   'claude-sonnet-4': { 
