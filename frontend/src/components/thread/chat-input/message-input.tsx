@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { UploadedFile } from './chat-input';
 import { FileUploadHandler } from './file-upload-handler';
 import { VoiceRecorder } from './voice-recorder';
-import { ModelSelector } from './model-selector';
+// import { ModelSelector } from './model-selector';
 import { SubscriptionStatus } from './_use-model-selection';
 import { isLocalMode } from '@/lib/config';
 
@@ -64,12 +64,12 @@ export const MessageInput = forwardRef<HTMLTextAreaElement, MessageInputProps>(
       hideAttachments = false,
       messages = [],
 
-      selectedModel,
-      onModelChange,
-      modelOptions,
-      subscriptionStatus,
-      canAccessModel,
-      refreshCustomModels,
+      // selectedModel,
+      // onModelChange,
+      // modelOptions,
+      // subscriptionStatus,
+      // canAccessModel,
+      // refreshCustomModels,
     },
     ref,
   ) => {
@@ -150,14 +150,15 @@ export const MessageInput = forwardRef<HTMLTextAreaElement, MessageInputProps>(
             />
           </div>
           <div className='flex items-center gap-2'>
-            <ModelSelector
+            {/* <ModelSelector
               selectedModel={selectedModel}
               onModelChange={onModelChange}
               modelOptions={modelOptions}
               subscriptionStatus={subscriptionStatus}
               canAccessModel={canAccessModel}
               refreshCustomModels={refreshCustomModels}
-            />
+            /> */}
+            <div className="text-sm font-semibold text-primary">Claude Sonnet 3.7</div>
             <Button
               type="submit"
               onClick={isAgentRunning && onStopAgent ? onStopAgent : onSubmit}

@@ -147,10 +147,10 @@ def prepare_params(
             params["extra_headers"] = extra_headers
             logger.debug(f"Added OpenRouter site URL and app name to headers")
 
-    # # Add Bedrock-specific parameters
-    # if model_name.startswith("bedrock/"):
-    #     logger.debug(f"Preparing AWS Bedrock parameters for model: {model_name}")
-    #     del params["temperature"]  # Remove temperature for Bedrock models
+    # Add Bedrock-specific parameters
+    if model_name.startswith("bedrock/"):
+        logger.debug(f"Preparing AWS Bedrock parameters for model: {model_name}")
+        del params["temperature"]  # Remove temperature for Bedrock models
 
     #     if not model_id and "claude-3-7-sonnet-latest" in model_name:
     #         params["model_id"] = "arn:aws:bedrock:us-west-2:935064898258:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
