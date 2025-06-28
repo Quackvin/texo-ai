@@ -147,13 +147,14 @@ def prepare_params(
             params["extra_headers"] = extra_headers
             logger.debug(f"Added OpenRouter site URL and app name to headers")
 
-    # Add Bedrock-specific parameters
-    if model_name.startswith("bedrock/"):
-        logger.debug(f"Preparing AWS Bedrock parameters for model: {model_name}")
+    # # Add Bedrock-specific parameters
+    # if model_name.startswith("bedrock/"):
+    #     logger.debug(f"Preparing AWS Bedrock parameters for model: {model_name}")
+    #     del params["temperature"]  # Remove temperature for Bedrock models
 
-        if not model_id and "anthropic.claude-3-7-sonnet" in model_name:
-            params["model_id"] = "arn:aws:bedrock:us-west-2:935064898258:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
-            logger.debug(f"Auto-set model_id for Claude 3.7 Sonnet: {params['model_id']}")
+    #     if not model_id and "claude-3-7-sonnet-latest" in model_name:
+    #         params["model_id"] = "arn:aws:bedrock:us-west-2:935064898258:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+    #         logger.debug(f"Auto-set model_id for Claude 3.7 Sonnet: {params['model_id']}")
 
     # Apply Anthropic prompt caching (minimal implementation)
     # Check model name *after* potential modifications (like adding bedrock/ prefix)
@@ -300,6 +301,8 @@ async def make_llm_api_call(
         enable_thinking=enable_thinking,
         reasoning_effort=reasoning_effort
     )
+    logger.debug(f"Prepared API parameters: {json.dumps(params, indent=2)}")
+
     last_error = None
     for attempt in range(MAX_RETRIES):
         try:
